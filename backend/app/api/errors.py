@@ -17,6 +17,7 @@ from fastapi.responses import JSONResponse
 from sqlalchemy.exc import DBAPIError, InterfaceError, OperationalError
 
 from app.agent.errors import AgentError
+from app.audit.errors import AuditError
 from app.schemas.common import ErrorDetail, ErrorResponse
 from app.rag.errors import RAGError
 from app.services.errors import ServiceError
@@ -49,6 +50,14 @@ STATUS_BY_CODE: dict[str, int] = {
     "agent_budget_exceeded": 429,
     "agent_timeout": 504,
     "agent_error": 500,
+    # 阶段 4：审计
+    "audit_error": 500,
+    "audit_not_found": 404,
+    "audit_trace_not_found": 404,
+    "audit_trace_unreadable": 422,
+    "audit_invalid_request": 422,
+    "audit_unauthorized": 401,
+    "audit_storage_unavailable": 503,
 }
 
 GENERIC_INTERNAL_MESSAGE = "服务内部错误，请联系管理员并提供 request_id"
@@ -131,6 +140,24 @@ def install_error_handlers(app: FastAPI) -> None:
             "Agent 错误 code=%s category=%s path=%s request_id=%s",
             exc.code,
             exc.category,
+            request.url.path,
+            _request_id(request),
+        )
+        return error_response(
+            request,
+            status_code=status_code,
+            code=exc.code,
+            message=exc.message,
+            details=exc.details,
+        )
+
+    @app.exception_handler(AuditError)
+    async def _audit_error(request: Request, exc: AuditError) -> JSONResponse:
+        status_code = getattr(exc, "status_code", None) or STATUS_BY_CODE.get(exc.code, 500)
+        log = logger.info if status_code < 500 else logger.warning
+        log(
+            "审计错误 code=%s path=%s request_id=%s",
+            exc.code,
             request.url.path,
             _request_id(request),
         )

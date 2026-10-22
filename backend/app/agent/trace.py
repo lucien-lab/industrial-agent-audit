@@ -8,7 +8,9 @@
 3. 工具输入/输出只保存**摘要**（截断 + 白名单字段），不包含连接串、密码、API Key；
 4. 事件流同时写入进程内存储（供 `GET /api/v1/agent/traces/{id}` 查询）
    与可选的 JSONL 文件（供 Agent-Probe 离线消费）；
-5. 未设置 `AGENT_TRACE_WRITE_FILES=true` 时只保留内存，测试不产生磁盘副作用。
+5. 未设置 `AGENT_TRACE_WRITE_FILES=true` 时只保留内存，测试不产生磁盘副作用；
+6. 阶段 4 追加 `evidence` 事件（`meta.manifest`），只记录工具已返回的
+   有界证据清单，不新增查询，也不改变既有事件语义。
 """
 
 from __future__ import annotations
@@ -37,6 +39,9 @@ EVENT_TYPES = (
     "tool_retry",
     "decision",
     "answer",
+    # 阶段 4 追加：有界证据清单（供独立审计器离线核对数值/引用/质量限制）。
+    # 旧 Trace 不含该事件，审计器必须把依赖它的规则标为 UNKNOWN。
+    "evidence",
     "run_end",
 )
 

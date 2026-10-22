@@ -19,6 +19,7 @@ from fastapi import FastAPI, Request
 from app.api.app_meta import APP_VERSION, DESCRIPTION, SERVICE_NAME, TAGS_METADATA
 from app.api.errors import install_error_handlers
 from app.api.routes import agent, equipment, faults, health, knowledge, quality, readings, stats
+from app.api.routes import audit as audit_routes
 from app.db.session import dispose_engines
 
 logger = logging.getLogger("industrial_agent_audit.api")
@@ -87,6 +88,7 @@ def create_app() -> FastAPI:
     app.include_router(quality.router)
     app.include_router(knowledge.router)
     app.include_router(agent.router)
+    app.include_router(audit_routes.router)
 
     @app.get("/", include_in_schema=False)
     def root() -> dict[str, str]:

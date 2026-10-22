@@ -30,6 +30,11 @@ from app.core.config import load_env_file  # noqa: E402
 from app.services import dataset as ds  # noqa: E402
 
 TABLES = (
+    # 阶段 4：审计表（独立审计库/测试库；与业务表无外键依赖）
+    "audit_findings",
+    "audit_runs",
+    "audit_trace_events",
+    "audit_traces",
     # 阶段 2：知识库表也在每个用例前清空，保证 RAG 测试互不影响
     "knowledge_ingest_runs",
     "document_chunks",

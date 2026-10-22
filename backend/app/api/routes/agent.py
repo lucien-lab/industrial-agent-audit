@@ -58,7 +58,34 @@ def chat(payload: AgentChatRequest, response: Response) -> AgentChatResponse:
         include_trace=payload.include_trace,
     )
     response.headers["X-Agent-Trace-Id"] = result.trace_id
-    return AgentChatResponse.model_validate(result.to_dict())
+    payload = AgentChatResponse.model_validate(result.to_dict())
+
+    # 阶段 4：可选的“运行后自动审计”。审计失败绝不影响原始回答与 Trace，
+    # 审计结果也不会修改 result（回答与 Trace 保持原样）。
+    try:
+        from app.audit.config import get_audit_settings
+        from app.audit.engine import audit_after_run
+
+        audit_settings = get_audit_settings()
+        if audit_settings.auto_audit_on_chat and audit_settings.audit_database_url:
+            report = audit_after_run(result.trace_id, settings=audit_settings)
+            if report is not None:
+                response.headers["X-Audit-Id"] = report.audit_id
+                response.headers["X-Audit-Risk"] = (
+                    report.overall_risk.value
+                    if hasattr(report.overall_risk, "value")
+                    else str(report.overall_risk)
+                )
+                response.headers["X-Audit-Status"] = (
+                    report.status.value if hasattr(report.status, "value") else str(report.status)
+                )
+    except Exception:  # noqa: BLE001 - 自动审计是附加能力
+        import logging
+
+        logging.getLogger("industrial_agent_audit.api").exception(
+            "自动审计失败 trace_id=%s", result.trace_id
+        )
+    return payload
 
 
 @router.get(

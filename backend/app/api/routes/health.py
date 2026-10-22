@@ -17,7 +17,7 @@ router = APIRouter(tags=["健康检查"], responses={})
 # 代码期望的 Alembic 版本：新增迁移时同步更新。
 # 版本不一致**不会**让 /ready 返回 503（结构差异由部署流程负责），
 # 但会把 `schema_ok` 置为 false，便于运维与监控发现“代码先上、迁移未上”。
-EXPECTED_SCHEMA_VERSION = "0007_knowledge_rag"
+EXPECTED_SCHEMA_VERSION = "0008_agent_audit"
 
 
 def _current_schema_version() -> str | None:

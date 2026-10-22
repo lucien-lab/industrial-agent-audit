@@ -2,14 +2,14 @@
 
 ## 范围与边界
 
-本文件描述目标架构。截至阶段 3，**存储层、数据服务、只读查询 API、知识库与 RAG 检索问答、
-LangGraph 单 Agent 与只读工具、最小执行 Trace 已实现**：
+本文件描述目标架构。截至阶段 4，**存储层、数据服务、只读查询 API、知识库与 RAG 检索问答、
+LangGraph 单 Agent 与只读工具、最小执行 Trace、以及 Agent-Probe 行为审计已实现**：
 `backend/app/models/` 的 ORM 模型、`backend/alembic/` 的迁移、`backend/app/services/` 的
 导入/查询/知识服务、`backend/app/rag/` 的解析/切分/Embedding/混合检索/问答、
-`backend/app/api/` 的 FastAPI 接口、以及 PostgreSQL + pgvector 的 Compose 部署；
-Agent-Probe（阶段 4）与前端（阶段 5）仍未实现。初期采用模块化单体：一个 FastAPI 后端、
-一套 React 前端和 PostgreSQL 数据库。Agent-Probe 是本项目的行为追踪与审计模块名称，
-尚未选定或接入同名外部产品。
+`backend/app/api/` 的 FastAPI 接口、`backend/app/audit/` 的规范化/规则/Judge/混合审计/持久化、
+以及 PostgreSQL + pgvector 的 Compose 部署；前端（阶段 5）仍未实现。初期采用模块化单体：
+一个 FastAPI 后端、一套 React 前端和 PostgreSQL 数据库。Agent-Probe 是本项目的
+行为追踪与审计模块名称（Observability + Audit），不是运行时拦截器，也未接入同名外部产品。
 
 已实现的调用边界（阶段 1B/1C/2）：
 
@@ -27,7 +27,8 @@ Agent-Probe（阶段 4）与前端（阶段 5）仍未实现。初期采用模�
 | Agent 工作流 | `backend/app/agent/{graph,nodes,state,intent,planner_llm}.py` | LangGraph 单 Agent：意图 → 规划 → 执行 → 检查 → 证据整合 → 结束，带预算与超时 |
 | Agent 工具 | `backend/app/agent/tools/` | 6 个只读工具（5 数据 + 1 知识检索），Pydantic 校验、超时、有限重试 |
 | Agent 证据与回答 | `backend/app/agent/{evidence,answer}.py` | 事实清单（D 标签）、知识片段（K 标签）、数值接地、引用逐字校验 |
-| Agent Trace | `backend/app/agent/trace.py` | 结构化事件（最小契约，供阶段 4 消费），不含敏感信息 |
+| Agent Trace | `backend/app/agent/trace.py`、`app/agent/evidence_manifest.py` | 结构化事件 + 有界证据清单（`evidence` 事件），不含敏感信息 |
+| Agent-Probe 审计 | `backend/app/audit/`、`app/models/audit.py`、`app/api/routes/audit.py` | Trace 规范化、11 条确定性规则、LLM Judge、混合审计、回放、独立审计库与 API |
 | Agent 接口与配置 | `backend/app/api/routes/agent.py`、`app/schemas/agent.py`、`app/agent/{service,config,context}.py` | `POST /api/v1/agent/chat`、`GET /api/v1/agent/traces/{id}`；预算配置与只读会话 |
 
 Agent 负责完成业务问题；Agent-Probe 负责观察执行过程并评估合规性与证据质量。审计通过不代表设备安全认证，也不等同于答案必然正确。
@@ -157,6 +158,33 @@ PDF（sources.json 登记 URL/SHA-256/许可/适用范围）
 
 细节见 [Agent 设计](agent_design.md)、[工具契约](agent_tools.md)、[Agent 评估](agent_evaluation.md)。
 
+## Agent-Probe 实现（阶段 4）
+
+```
+JSONL Trace / 内存 TraceStore
+  → collector（文件/内存/索引，只读、大小与路径校验）
+  → normalizer（排序、去重、稳定 event_id、脱敏、结构问题）
+  → evidence index（统计值、质量、引用、数值集合、工具入参）
+  → Rule R1–R10（确定，不调用 LLM）
+  → LLM Judge（目标一致性/证据支持/过度推断/注入影响/错误拒答）
+  → scoring（冲突记录、风险等级、人工复核）
+  → repository（独立审计库：幂等、版本隔离、追加式）
+  → /api/v1/audit/*
+```
+
+关键边界：
+
+- **独立**：审计器不调用业务 Agent、不执行工具、不查询工业数据；可选的知识库原文核对会
+  显式记录 `external_reads`，此时不是纯冻结 Trace 回放。
+- **不默认通过**：证据不足、解析失败、模型不可用、事件缺失一律 `UNKNOWN`；
+  只有确定性规则 FAIL 才产生 `low/medium/high/critical` 等级。
+- **冲突保留**：规则 FAIL 与 Judge PASS 冲突时记录 `rule_judge_conflict`，保留规则结论。
+- **数据库隔离**：审计写库 `AUDIT_DATABASE_URL` 与业务只读连接分离；迁移 `0008` 只在
+  `iaa_audit_dev` / `*_test` 执行，主库仍为 `0004`。
+- **不是 Protection**：离线审计不能阻止已经完成的操作；运行时权限/预算仍由 Agent 工具层控制。
+
+细节见 [审计设计](audit_design.md)、[审计规则](audit_rules.md)、[审计评估](audit_evaluation.md)。
+
 ## 主要业务数据流
 
 ```mermaid
@@ -202,8 +230,10 @@ sequenceDiagram
 - 用 `trace_id` 关联任务，`event_id` 与序号定位事件；按白名单脱敏，限制正文体积，保留来源及必要证据快照以便回放。
 - 规则审计检查越权尝试、参数范围、调用失败后的处理及引用完整性；LLM 评审检查证据支持度和建议一致性，其输出只作为评审意见。
 - 检索文档与工具返回值均视为不可信内容；提示注入防护和工具权限属于执行边界，审计记录异常尝试。
-- 初期采用进程内采集加持久化待审计状态，避免引入消息队列。任务结束后触发评审，进程重启后按状态恢复；恢复机制在阶段 4 实现。
+- 阶段 4 实现：JSONL 为权威来源，审计库只保存规范化事件索引与审计结果；不引入消息队列。
+  支持运行后自动审计（`AUDIT_AUTO_ON_CHAT`）与历史 Trace 重新审计；审计失败不影响原始回答。
 - 轨迹写入失败必须暴露“轨迹不完整”状态；评审失败、未运行和无法判定不得显示为通过。审计错误不修改原始回答。
+- 同一 Trace 可用不同 `audit_version` / 规则配置重新审计，旧结果不被覆盖；自然键保证幂等。
 
 ## 可测试性与独立开发
 

@@ -175,7 +175,7 @@ def test_knowledge_health_reports_schema_and_index(api_client, clean_engine):
     response = api_client.get("/api/v1/knowledge/health")
     assert response.status_code == 200
     body = response.json()
-    assert body["schema_version"] == "0007_knowledge_rag"
+    assert body["schema_version"] == "0008_agent_audit"
     assert body["schema_ok"] is True
     assert body["documents"] == 1
     assert body["chunks"] == 2

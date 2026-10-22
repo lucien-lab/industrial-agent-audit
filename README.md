@@ -17,7 +17,7 @@
 | 检索与问答评估：52 题评估集、Recall@5 / MRR@10、人工复核 | ✅ 阶段 2 |
 | Agent 评估：51 题开发集 + 11 题留出集、工具选择/数值/引用/耗时指标 | ✅ 阶段 3 |
 | 智能运维 Agent（LangGraph 单 Agent + 6 个只读工具、证据整合、执行 Trace） | ✅ 阶段 3 |
-| Agent-Probe 行为审计（轨迹、规则、LLM 评审） | ⬜ 阶段 4（未开始） |
+| Agent-Probe 行为审计（Trace 规范化、11 条确定性规则、LLM Judge、混合审计、审计 API、80 条评估集） | ✅ 阶段 4 |
 | 可视化（设备趋势、引用、轨迹、审计面板） | ⬜ 阶段 5（未开始） |
 
 ## 技术栈规划
@@ -36,6 +36,7 @@ psycopg 3.3.4、pytest 9.1.1、pandas 3.0.3（Python 3.11.15，Conda 环境 `ms_
 阶段 2 新增：PyMuPDF 1.28.0、pgvector（Python）0.4.2；Embedding `bge-m3`（1024 维）与
 `qwen2.5:7b-instruct` 通过本机 Ollama 调用，无需外部 API Key。
 阶段 3 新增：`langgraph 1.2.2`（conda-forge 安装，未升级既有依赖）。
+阶段 4 未新增第三方依赖（复用 SQLAlchemy/Pydantic/Ollama 客户端）。
 依赖清单见 `backend/requirements.txt`。
 
 ## 项目目录说明
@@ -51,7 +52,7 @@ psycopg 3.3.4、pytest 9.1.1、pandas 3.0.3（Python 3.11.15，Conda 环境 `ms_
 | `backend/app/services/` | 数据导入、来源登记、只读查询服务 |
 | `backend/app/rag/` | 知识库：PDF 解析、切分、Embedding、混合检索、RAG 回答 |
 | `backend/app/agent/` | LangGraph 工作流、意图/规划、只读工具、证据整合与执行 Trace |
-| `backend/app/audit/` | 轨迹采集契约、规则审计与模型评审 |
+| `backend/app/audit/` | Agent-Probe：Trace 规范化、确定性规则 R1–R10、LLM Judge、混合审计、回放与持久化 |
 | `backend/tests/` | 后续单元、集成与评估测试 |
 | `frontend/` | 运行与审计可视化 |
 | `docker-compose.yml` | PostgreSQL + pgvector 单服务编排（命名卷、健康检查） |
@@ -95,8 +96,9 @@ psycopg 3.3.4、pytest 9.1.1、pandas 3.0.3（Python 3.11.15，Conda 环境 `ms_
 
 阶段 1C 收口后的实际状态：FastAPI 只读查询服务已完成（8 个接口、193 项测试、覆盖率 96%）。
 
-当前整体状态：阶段 0、1A、1B（含缺陷修复）、1C、2 已完成开发与自测，**阶段 3 已完成开发、测试与评估**；
-阶段 4（Agent-Probe）与阶段 5（前端集成）未开始。**阶段 2 未做独立验收**，不得视为已正式验收通过。
+当前整体状态：阶段 0、1A、1B（含缺陷修复）、1C、2 已完成开发与自测，阶段 3 已完成开发、测试与评估，
+**阶段 4（Agent-Probe 行为审计）已完成开发、测试与评估**；阶段 5（前端集成）未开始。
+**阶段 2 未做独立验收**，不得视为已正式验收通过。
 
 ## 阶段 2 已交付（2026-10-22）
 
@@ -151,7 +153,37 @@ psycopg 3.3.4、pytest 9.1.1、pandas 3.0.3（Python 3.11.15，Conda 环境 `ms_
 阶段 3 详情：[Agent 设计](docs/agent_design.md) · [工具契约](docs/agent_tools.md) ·
 [Agent 评估](docs/agent_evaluation.md) · [Phase 3 报告](docs/phase3_report.md)
 
-仍未实现：Agent-Probe 审计（阶段 4）、React 前端（阶段 5）。
+## 阶段 4 已交付（2026-10-25）
+
+- **独立审计器**：`backend/app/audit/` 不依赖业务 Agent 决策，不执行工业数据工具，不修改原始 Trace/回答。
+  明确区分 Observability（事件可观察）、Audit（规则/证据判断）与 Protection（本阶段只提供轻量接口，
+  **不宣称离线审计能阻止已完成的危险操作**）。
+- **Trace 接入**：只新增一个 `evidence` 事件（`meta.manifest`，有界证据清单），不改动既有事件；
+  旧 Trace 缺少该事件时，依赖证据的规则返回 `UNKNOWN`，不会默认通过。
+- **规则**：11 条确定性规则（R1/R1B + R2–R10），覆盖工具白名单、参数合法性、预算、重复调用、
+  时间窗、设备、数据质量、数值与统计口径、知识引用、执行链、状态一致性；每条结果带
+  事件 ID / 证据引用 / 可解释原因。
+- **LLM Judge**：本机 Ollama `qwen2.5:7b-instruct`，5 个语义任务（目标一致性、证据支持性、
+  过度推断、文档指令影响、错误拒答）；Pydantic 结构化输出、有限重试、聚焦拒答复核；
+  解析失败/超时/模型不可用 → `UNKNOWN` + 人工复核，绝不视为通过。
+- **混合审计**：`rule_only / llm_only / hybrid`；规则 FAIL 与 Judge PASS 冲突会记录并保留规则结论。
+  风险等级只来自已确认 FAIL 的最高严重度，不是分数相加，也不是正确率保证。
+- **持久化**：迁移 `0008_agent_audit`，新增 `audit_traces / audit_trace_events / audit_runs / audit_findings`；
+  审计写库 `AUDIT_DATABASE_URL` 与业务只读连接分离，幂等自然键 + 审计版本隔离，**不覆盖历史结果**。
+- **API**：`/api/v1/audit/traces/{id}`、`/traces/{id}/evaluate`、`/runs/{id}`、`/runs`、`/findings`、
+  `/summary`、`/rules`、`/findings/{id}/review`；可选 `X-Audit-Token`。
+- **评估集**：80 条样例（14 真实 Trace / 54 受控修改的真实 Trace / 12 手工构造），
+  开发集 44 / 留出集 36，同一原始 Trace 不跨 split。
+- **实测**：`507 passed / 7 skipped`（阶段 1B–3 全部无回归；真实 Judge 端到端默认跳过）；
+  Rule / LLM / Hybrid 的 Precision、Recall、F1、误报/漏报与耗时见
+  [审计评估](docs/audit_evaluation.md)。
+- **数据库**：主库仍为 `0004`，RAG 开发库仍为 `0007`；`0008` 只在独立审计库
+  `iaa_audit_dev` 与 `*_test` 执行。原始 CSV 与 Embedding 未修改。
+
+阶段 4 详情：[审计设计](docs/audit_design.md) · [审计规则](docs/audit_rules.md) ·
+[审计评估](docs/audit_evaluation.md) · [Phase 4 报告](docs/phase4_report.md)
+
+仍未实现：React 前端（阶段 5）。
 
 ## 快速开始（数据、查询服务与知识库）
 
@@ -241,6 +273,11 @@ conda run -n ms_pointcloud_midterm python -m uvicorn app.main:app --host 127.0.0
 | GET | `/api/v1/knowledge/health` | 知识库迁移版本、索引模型/维度、可选模型服务探测 |
 | POST | `/api/v1/agent/chat` | 运维 Agent 问答：意图识别 → 工具编排 → 证据整合 → 有引用回答 |
 | GET | `/api/v1/agent/traces/{trace_id}` | 一次执行的结构化 Trace（可选完整事件流） |
+| GET | `/api/v1/audit/traces/{trace_id}` | 审计回放：事件、工具调用、证据摘要、已有审计 |
+| POST | `/api/v1/audit/traces/{trace_id}/evaluate` | 对指定 Trace 发起审计（rule_only / llm_only / hybrid） |
+| GET | `/api/v1/audit/runs/{audit_id}` | 完整审计报告（逐条规则/Judge 结果、证据、配置快照） |
+| GET | `/api/v1/audit/findings` | 审计发现筛选（风险类别/严重度/trace/复核状态） |
+| GET | `/api/v1/audit/summary` | 审计统计（次数、风险分布、规则/Judge 分布、平均耗时） |
 
 约定：时间**无时区**、区间**左闭右开** `[start_time, end_time)`；带 `Z`/`+08:00` 的输入被拒绝（422）；
 所有错误统一为 `{"error": {"code", "message", "details", "request_id"}}`。
@@ -283,6 +320,40 @@ conda run -n ms_pointcloud_midterm python scripts/evaluate_agent.py \
 conda run -n ms_pointcloud_midterm python scripts/evaluate_agent.py --planner llm \
   --ids A01,A04,B01,B10,C01,C04,G02,H01,I04 --skip-fault-scenarios
 ```
+
+### Agent-Probe 审计（阶段 4）
+
+```bash
+# 0) 独立审计库（一次性；绝不迁移主库）
+#    .env 中配置 AUDIT_DATABASE_URL=postgresql+psycopg://.../iaa_audit_dev
+scripts/migrate.sh target   # 先确认目标库
+cd backend && ALEMBIC_DATABASE_URL="$AUDIT_DATABASE_URL" \
+  conda run -n ms_pointcloud_midterm python -m alembic upgrade head && cd ..
+
+# 1) 生成真实 Trace（14 题；真实模型/数据/RAG，只读）
+$RUN scripts/generate_audit_traces.py
+
+# 2) 构建审计评估集（真实 + 受控修改 + 手工构造；80 条）
+$RUN scripts/build_audit_cases.py
+
+# 3) 三种审计模式对比（Judge 结果会缓存；完整约 15–25 分钟）
+$RUN scripts/evaluate_audit.py --modes rule_only,llm_only,hybrid --no-external-verify
+# 只要规则审计（秒级）
+$RUN scripts/evaluate_audit.py --modes rule_only
+
+# 4) 审计一条真实 Trace（API）
+curl -s -X POST http://127.0.0.1:8000/api/v1/audit/traces/<trace_id>/evaluate \
+  -H 'Content-Type: application/json' -d '{"mode":"hybrid"}'
+curl -s "http://127.0.0.1:8000/api/v1/audit/findings?trace_id=<trace_id>"
+
+# 真实 Judge 端到端测试（默认跳过）
+cd backend && IAA_AUDIT_E2E=1 conda run -n ms_pointcloud_midterm \
+  python -m pytest tests/test_audit_e2e_real.py -m slow -q
+```
+
+审计配置项见 `.env.example` 的 `AUDIT_*`。**部署限制**：未设置 `AUDIT_API_TOKEN` 时，
+审计接口只应绑定 `127.0.0.1` 或隔离环境；本阶段不实现复杂 RBAC。
+审计是**离线/事后**能力，不拦截已经执行的操作。
 
 Agent 配置项见 `.env.example` 的 `AGENT_*`（预算、超时、返回量、回答模式、Trace 目录）。
 若本机开启了系统 HTTP 代理，代码会把 loopback 主机（`127.0.0.1`/`localhost`）写入 `NO_PROXY`，

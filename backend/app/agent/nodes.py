@@ -16,11 +16,13 @@ from __future__ import annotations
 import time
 from typing import Any
 
+from app.agent import AGENT_VERSION
 from app.agent.answer import compose_answer
 from app.agent.config import AgentSettings
 from app.agent.context import AgentContext
 from app.agent.errors import blocks_dependents
 from app.agent.evidence import build_fact_sheet
+from app.agent.evidence_manifest import build_evidence_manifest
 from app.agent.intent import (
     IntentResult,
     PlannedCall,
@@ -669,6 +671,38 @@ class AgentNodes:
         evidence_refs = [item.get("label") for item in (answer.get("citations") or [])]
         summary: dict[str, Any] | None = None
         if self.ctx.recorder is not None:
+            # 阶段 4：在结束事件之前写入有界证据清单。只读已返回的观测，
+            # 不重新执行工具；旧 Trace 缺少该事件时审计器会标记 UNKNOWN。
+            try:
+                manifest = build_evidence_manifest(
+                    agent_version=AGENT_VERSION,
+                    question=state.get("question", ""),
+                    execution_status=status,
+                    answer=answer,
+                    observations=list(state.get("observations") or []),
+                    slots=Slots.from_dict((state.get("intent") or {}).get("slots") or {}),
+                    fact_sheet=state.get("facts") or {},
+                    settings=self.settings,
+                    metrics={
+                        "steps": int(state.get("steps", 0)),
+                        "rounds": int(state.get("rounds", 0)),
+                        "tool_call_count": int(state.get("tool_call_count", 0)),
+                        "plan_truncated": bool(state.get("plan_truncated")),
+                        "planned_tools": [str(item.get("tool")) for item in (state.get("plan") or [])],
+                    },
+                )
+            except Exception as exc:  # noqa: BLE001 - 证据清单失败不能丢原始执行记录
+                manifest = {
+                    "schema_version": "agent-evidence-v1",
+                    "error": f"manifest_build_failed:{type(exc).__name__}",
+                }
+            self.ctx.recorder.record(
+                "evidence",
+                node="finalize",
+                status="ok" if "error" not in manifest else "error",
+                output_summary={"labels": [item.get("label") for item in manifest.get("citations") or []]},
+                meta={"manifest": manifest},
+            )
             summary = self.ctx.recorder.finish(
                 question=state.get("question", ""),
                 execution_status=status,

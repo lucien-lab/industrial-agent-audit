@@ -22,8 +22,11 @@ from app.rag.retrieval import KnowledgeRetriever, RetrievalFilters
 
 logger = logging.getLogger("industrial_agent_audit.rag.service")
 
-# 知识库结构版本（与迁移一致）
+# 知识库结构版本（与迁移一致）。
+# 0008 只新增审计表，不改变 RAG 表结构，因此 0007 与 0008 都满足知识库健康检查；
+# 主库仍停留在 0004 时不会误报为“知识库可用”。
 EXPECTED_KNOWLEDGE_SCHEMA = "0007_knowledge_rag"
+COMPATIBLE_KNOWLEDGE_SCHEMAS = (EXPECTED_KNOWLEDGE_SCHEMA, "0008_agent_audit")
 
 
 @dataclass(frozen=True)
@@ -196,7 +199,7 @@ def knowledge_health(
     schema_version = session.execute(
         text("SELECT version_num FROM alembic_version")
     ).scalar_one_or_none()
-    schema_ok = schema_version == EXPECTED_KNOWLEDGE_SCHEMA
+    schema_ok = schema_version in COMPATIBLE_KNOWLEDGE_SCHEMAS
     if not schema_ok:
         warnings.append(
             f"知识库迁移版本 {schema_version} 与代码期望 {EXPECTED_KNOWLEDGE_SCHEMA} 不一致"

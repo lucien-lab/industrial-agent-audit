@@ -1,6 +1,7 @@
 """ORM 模型统一出口，Alembic 与测试通过这里拿到完整 metadata。"""
 
 from app.db.base import Base
+from app.models.audit import AuditFinding, AuditRun, AuditTrace, AuditTraceEvent
 from app.models.data_source import TIMEZONE_STATUSES, DataSource
 from app.models.equipment import Equipment
 from app.models.fault_event import VERIFICATION_STATUSES, FaultEvent
@@ -26,6 +27,10 @@ from app.models.sensor_reading import ANALOG_COLUMNS, DIGITAL_COLUMNS, SensorRea
 
 __all__ = [
     "ANALOG_COLUMNS",
+    "AuditFinding",
+    "AuditRun",
+    "AuditTrace",
+    "AuditTraceEvent",
     "Base",
     "DIGITAL_COLUMNS",
     "DataGap",
