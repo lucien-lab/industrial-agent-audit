@@ -16,13 +16,6 @@
 [![LangGraph](https://img.shields.io/badge/LangGraph-1.2.2-1c3d5a)](https://github.com/langchain-ai/langgraph)
 [![Textual](https://img.shields.io/badge/Textual-1.0-ff6ac1)](https://github.com/Textualize/textual)
 
-<!-- 质量与状态 -->
-[![Tests](https://img.shields.io/badge/tests-561%20passed-brightgreen)](#测试方法)
-[![Coverage](https://img.shields.io/badge/coverage-88%25-green)](#项目评估指标实测非目标值)
-[![Status](https://img.shields.io/badge/status-Phase%205%20complete-blue)](#当前开发状态)
-[![License](https://img.shields.io/badge/license-MIT-yellow)](LICENSE)
-[![Stars](https://img.shields.io/github/stars/lucien-lab/industrial-agent-audit?style=social)](https://github.com/lucien-lab/industrial-agent-audit/stargazers)
-
 [项目背景](#项目背景与目标) · [核心功能](#核心功能) · [快速体验](#快速体验tldr) · [系统架构](#系统架构概览) · [终端界面](#终端界面使用方法) · [测试](#测试方法) · [已知限制](#当前限制) · [文档索引](#项目文档)
 
 </div>
