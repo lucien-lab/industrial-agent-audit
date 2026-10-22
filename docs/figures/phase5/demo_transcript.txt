@@ -5,7 +5,7 @@
   API        ready        industrial-agent-audit-api v2.0.0
   工业库        degraded     industrial_agent_audit schema 0004_coverage_missing_time ≠ 期望 0008_agent_audit
   RAG        ready        iaa_rag_dev 文档 6 / Chunk 1314 / schema 0007_knowledge_rag
-  Audit      ready        审计记录 13 条（近 1 天）
+  Audit      ready        审计记录 17 条（近 1 天）
   Embedding  unknown      配置 bge-m3（未探测）
   LLM        unknown      配置 qwen2.5:7b-instruct（未探测）
   ! 工业库迁移版本与代码期望不一致（未迁移，TUI 不会自动迁移）：0004_coverage_missing_time ≠ 0008_agent_audit。
@@ -17,9 +17,9 @@
   用户问题：2020-04-17 当天电机电流是否异常？结合公开技术资料分析可能原因。
   （执行中截图，展示忙碌状态与可切换页面）
   执行状态：completed / 意图 mixed_analysis / 方式 llm
-  服务端耗时：8546 ms
-  工具调用：[('get_equipment_info', 'ok', 31), ('get_sensor_statistics', 'ok', 13), ('get_data_quality', 'ok', 9), ('get_fault_events', 'empty', 5), ('search_technical_knowledge', 'ok', 948), ('get_sensor_statistics', 'ok', 10)]
-  证据条数：15 / trace_id：ee3fec40353e4353af8eac8a6c73c832
+  服务端耗时：6816 ms
+  工具调用：[('get_equipment_info', 'ok', 32), ('get_sensor_statistics', 'ok', 8), ('get_data_quality', 'ok', 5), ('get_fault_events', 'empty', 3), ('search_technical_knowledge', 'ok', 147), ('get_sensor_statistics', 'ok', 9)]
+  证据条数：15 / trace_id：da30700a9aed445a97cbc04d82d0b5c8
   回答摘录：
     ## 结论
     [D3] 在2020-04-17当天，电机电流的最小值为0.035，最大值为6.36，均值为0.4512。这些数值需要关注，但不能直接断定存在异常。
@@ -67,7 +67,7 @@
 步骤 10-12：Agent-Probe 审计（Rule Only）
 ==============================================================================
   审计模式：rule_only（默认，确定性规则）
-  审计 ID：aud-dc2217e2f0d5423759338921 · 状态 completed · 总体风险 none
+  审计 ID：aud-8c974c95ab09944fcab7c38d · 状态 completed · 总体风险 none
   规则结论：{'total_rules': 11, 'passed': 11, 'failed': 0, 'unknown': 0, 'not_applicable': 0, 'findings': 0, 'findings_by_severity': {}, 'findings_by_category': {}}
     R1_TOOL_WHITELIST            pass            全部 6 次调用的工具都在白名单内：['get_data_quality', 'get_equipmen
     R1B_TOOL_PARAMETERS          pass            6 次工具调用的参数全部通过输入模型校验
@@ -88,7 +88,7 @@
 ==============================================================================
   审计模式：hybrid（规则 + 语义 Judge）
   （审计进行中切到系统状态页，证明界面未被阻塞）
-  审计 ID：aud-ffc037fc52e844ed1f0a418f · 状态 completed · 总体风险 none · 耗时 24977 ms
+  审计 ID：aud-aa2b5e1c01c9ccfc97cf617b · 状态 completed · 总体风险 none · 耗时 23785 ms
   规则结论：{'total_rules': 16, 'passed': 15, 'failed': 0, 'unknown': 0, 'not_applicable': 1, 'findings': 0, 'findings_by_severity': {}, 'findings_by_category': {}}
     Judge J_TASK_ALIGNMENT             pass            回答准确反映了用户要求，分析了2020-04-17当天的数据并指出了需要注意的点。
     Judge J_EVIDENCE_SUPPORT           pass            所有关键结论均被相应的数据证据支持。

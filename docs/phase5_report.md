@@ -140,11 +140,11 @@ scripts/start_tui.sh          # 终端 2（或 iaa-tui / cd backend && python -m
 | 步骤 | 实测结果 |
 | --- | --- |
 | 系统状态 | API ready；工业库 **degraded**（`0004` ≠ `0008`）；RAG ready（6 文档 / 1,314 chunk）；Audit ready；Embedding/LLM 未探测 |
-| Agent 问答 | `completed` / `mixed_analysis` / `llm`；服务端 8.5 s；6 次工具调用（含 1 次 `empty`）；15 条证据 |
+| Agent 问答 | `completed` / `mixed_analysis` / `llm`；服务端 6.8 s；6 次工具调用（含 1 次 `empty`）；15 条证据 |
 | 回答数值 | Motor_current 6,301 样本：min 0.035 / max 6.36 / mean 0.4512 / std 1.302；样本覆盖率 0.7293；缺口 2 处 14,594 s；冻结候选 4,378 行（69.48%） |
 | Trace | 13 条事件（run_start → node/intent/plan → 6× tool_call/tool_result → decision/answer/evidence/run_end），证据清单 `agent-evidence-v1` |
 | Rule Only 审计 | 11 条规则全部 PASS，约 4 ms，`overall_risk=none` |
-| Hybrid 审计 | 16 项结论（15 PASS / 1 N/A），耗时 24.98 s，Judge 5 项（4 pass + 1 n/a） |
+| Hybrid 审计 | 16 项结论（15 PASS / 1 N/A），耗时 23.79 s，Judge 5 项（4 pass + 1 n/a） |
 | 历史回放 | trace `32885113…`：`R8_KNOWLEDGE_CITATION` = **UNKNOWN**（medium），界面显示 UNKNOWN 并归入「缺少证据」小节 |
 | Knowledge | 5 条结果（3 条通用资料 + 2 条 MetroPT-3 直接资料），页码/chunk_id/RRF 分数齐全 |
 | Equipment | 3 路传感器统计（6,301 样本）+ 质量（覆盖率 0.729 / 缺口 4.05 h / 冻结候选 4,378） |
@@ -186,7 +186,7 @@ $ IAA_TUI_E2E=1 python -m pytest tests/test_tui_integration_real.py -q -m slow
 | 能检索 RAG 知识库 | ✅ | Knowledge 三模式；真实端到端 chunk_id 序列比对 |
 | 能浏览历史 Trace | ✅ | Trace Explorer + 「最近审计」下拉；真实 13 事件 |
 | 能触发 Rule Only 审计 | ✅ | 默认模式；真实 11 条规则 PASS（约 4 ms） |
-| 能触发 Hybrid 审计 | ✅ | 真实 16 项结论、24.98 s |
+| 能触发 Hybrid 审计 | ✅ | 真实 16 项结论、23.79 s |
 | 能显示审计结果和风险证据 | ✅ | 规则/发现表 + 详情（证据引用、关联事件、details JSON） |
 | 异步任务不阻塞 TUI | ✅ | 单测切换页面 + 真实 Hybrid 期间切换页面 |
 | 正确处理后端异常 | ✅ | Client 18 项（超时/404/422/503/401/无效 JSON/缺字段）；UI 错误提示与「不当作通过」 |
@@ -209,6 +209,8 @@ $ IAA_TUI_E2E=1 python -m pytest tests/test_tui_integration_real.py -q -m slow
 6. **无认证**：审计/Trace/设备接口只适合本机或隔离网络；公网部署前需补齐鉴权。
 7. **Textual 1.0 的 Markdown 组件不保留原文**，测试改用数据模型 + 渲染块文本断言（已在辅助函数处理）。
 8. **小终端可用但不理想**：80×24 可操作，信息密度最佳在 150×46 左右。
+9. **审计库 schema 版本未由 API 暴露**：状态页对 Audit 只给「可用 + 审计条数」，
+   精确版本需 `scripts/check_system.sh`；未为了界面完整而编造版本号。
 
 ## 11. 当前数据库状态（本阶段结束时实测）
 

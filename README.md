@@ -1,6 +1,60 @@
+<div align="center">
+
 # 基于 RAG 与 Agent 行为审计的工业设备智能运维系统
 
-英文名称：Industrial Equipment Intelligent Maintenance & Agent Audit System
+**Industrial Equipment Intelligent Maintenance & Agent Audit System**
+
+工业数据治理 → RAG 知识检索 → LangGraph 运维 Agent → Agent-Probe 行为审计 → Textual 终端界面
+
+一条命令启动的终端 AI 运维助手，回答带证据、执行留 Trace、行为可审计。
+
+<!-- 技术栈 -->
+[![Python](https://img.shields.io/badge/Python-3.11-3776ab?logo=python&logoColor=white)](https://www.python.org/)
+[![FastAPI](https://img.shields.io/badge/FastAPI-0.x-009688?logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com/)
+[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-17.11-4169e1?logo=postgresql&logoColor=white)](https://www.postgresql.org/)
+[![pgvector](https://img.shields.io/badge/pgvector-0.8.7-4169e1)](https://github.com/pgvector/pgvector)
+[![LangGraph](https://img.shields.io/badge/LangGraph-1.2.2-1c3d5a)](https://github.com/langchain-ai/langgraph)
+[![Textual](https://img.shields.io/badge/Textual-1.0-ff6ac1)](https://github.com/Textualize/textual)
+
+<!-- 质量与状态 -->
+[![Tests](https://img.shields.io/badge/tests-561%20passed-brightgreen)](#测试方法)
+[![Coverage](https://img.shields.io/badge/coverage-88%25-green)](#项目评估指标实测非目标值)
+[![Status](https://img.shields.io/badge/status-Phase%205%20complete-blue)](#当前开发状态)
+[![License](https://img.shields.io/badge/license-MIT-yellow)](LICENSE)
+[![Stars](https://img.shields.io/github/stars/lucien-lab/industrial-agent-audit?style=social)](https://github.com/lucien-lab/industrial-agent-audit/stargazers)
+
+[项目背景](#项目背景与目标) · [核心功能](#核心功能) · [快速体验](#快速体验tldr) · [系统架构](#系统架构概览) · [终端界面](#终端界面使用方法) · [测试](#测试方法) · [已知限制](#当前限制) · [文档索引](#项目文档)
+
+</div>
+
+![系统状态](docs/figures/phase5/01-system-status.svg)
+
+> 上图由 `scripts/demo_phase5.py` 在真实后端（真实数据库 + 真实 Ollama）上运行后由 Textual 直接导出，不是手绘示意图。
+
+## 目录
+
+- [项目背景与目标](#项目背景与目标)
+- [核心功能](#核心功能)
+- [快速体验（TL;DR）](#快速体验tldr)
+- [系统架构概览](#系统架构概览)
+- [技术栈规划](#技术栈规划)
+- [项目目录说明](#项目目录说明)
+- [开发阶段](#开发阶段)
+- [当前开发状态](#当前开发状态)
+- [阶段 2 已交付](#阶段-2-已交付2026-10-22)
+- [阶段 3 已交付](#阶段-3-已交付2026-10-24)
+- [阶段 4 已交付](#阶段-4-已交付2026-10-25)
+- [阶段 5 已交付（终端 TUI）](#阶段-5-已交付终端-tui-与系统集成)
+- [终端界面使用方法](#终端界面使用方法)
+- [测试方法](#测试方法)
+- [项目评估指标（实测，非目标值）](#项目评估指标实测非目标值)
+- [当前限制](#当前限制)
+- [快速开始（数据、查询服务与知识库）](#快速开始数据查询服务与知识库)
+- [后续工作计划](#后续工作计划)
+- [项目文档](#项目文档)
+- [贡献指南](#贡献指南)
+- [许可证](#许可证)
+- [致谢](#致谢)
 
 ## 项目背景与目标
 
@@ -21,6 +75,52 @@
 | 终端界面 TUI：Agent 对话、设备数据、知识检索、Trace、审计面板、系统状态 | ✅ 阶段 5 |
 | 统一 API Client（超时/重试/错误结构/令牌隔离）与 CLI 入口（`iaa-tui`） | ✅ 阶段 5 |
 | 真实端到端演示（Agent → Trace → Rule Only / Hybrid 审计 → 证据）与终端截图 | ✅ 阶段 5 |
+
+## 系统架构概览
+
+```mermaid
+flowchart LR
+    TUI["Textual TUI<br/>6 个页面"] --> API["FastAPI<br/>全部只读接口"]
+    API --> AGENT["LangGraph Agent<br/>analyze → plan → execute → check → compose"]
+    AGENT --> TOOLS["6 个只读工具<br/>设备数据 / 统计 / 故障 / 质量 / 知识检索"]
+    TOOLS --> DB[("PostgreSQL 17 + pgvector<br/>151 万行工业数据 + 1314 个向量")]
+    TOOLS --> LLM["Ollama<br/>bge-m3 / qwen2.5:7b-instruct"]
+    AGENT --> TRACE["Agent Trace<br/>run_start → … → run_end"]
+    TRACE --> AUDIT["Agent-Probe 审计<br/>R1-R10 确定性规则 + LLM Judge"]
+    AUDIT --> AUDITDB[("审计库<br/>audit_runs / audit_findings")]
+    AUDITDB --> TUI
+```
+
+Agent 的数据库会话在连接层固定为只读（`default_transaction_read_only=on`），
+审计器不依赖 Agent 决策、不执行工业数据工具、不修改原始 Trace。
+
+## 快速体验（TL;DR）
+
+前置：Python 3.11（Conda 环境）、Docker（或已运行的 Lima docker）、本机 [Ollama](https://ollama.com/)。
+
+```bash
+cp .env.example .env          # 填写本地数据库密码；.env 已被 .gitignore 忽略
+scripts/db.sh up              # 启动 PostgreSQL + pgvector（等待 healthy）
+scripts/migrate.sh up         # 建表（不会在应用启动时自动建表）
+
+pip install -r backend/requirements.txt
+pip install -e backend        # 生成 iaa-tui 命令（也可 python -m app.tui）
+
+scripts/start_api.sh          # 终端 1：后端 API
+scripts/start_tui.sh          # 终端 2：终端界面
+```
+
+首次使用需要先导入数据与知识文档，完整步骤见
+[快速开始](#快速开始数据查询服务与知识库)；只跑界面与接口测试不需要数据库：
+
+```bash
+cd backend && python -m pytest tests/test_tui_client.py tests/test_tui_app.py -q
+```
+
+一份真实运行记录见 [演示指南](docs/demo_guide.md) 与 [Phase 5 报告](docs/phase5_report.md)，
+截图位于 `docs/figures/phase5/`。
+
+`.env.example` 仅用于说明配置项，不能直接连接生产服务；实际环境文件、原始数据与知识库 PDF 不进入 Git。
 
 ## 技术栈规划
 
@@ -215,8 +315,8 @@ psycopg 3.3.4、pytest 9.1.1、pandas 3.0.3（Python 3.11.15，Conda 环境 `ms_
   新增 TUI 单测 54 项 + 真实端到端 7 项（`IAA_TUI_E2E=1`）。
 - **真实演示**：`python scripts/demo_phase5.py` 跑完整闭环并保存真实终端截图
   （`docs/figures/phase5/*.svg`）。一次真实问答：状态 `completed`、工具 6 次调用、证据 15 条、
-  服务端耗时 8.5 s；同一 Trace 的 Rule Only 审计 11 条规则全部 PASS（约 4 ms），
-  Hybrid 审计 16 项结论、耗时 24.98 s。
+  服务端耗时 6.8 s；同一 Trace 的 Rule Only 审计 11 条规则全部 PASS（约 4 ms），
+  Hybrid 审计 16 项结论、耗时 23.79 s。
 
 ![系统状态](docs/figures/phase5/01-system-status.svg)
 ![Agent Chat](docs/figures/phase5/02-agent-chat.svg)
@@ -528,6 +628,8 @@ scripts/migrate.sh target
 - 阶段 2 未做独立验收（阶段 3 起只消费其检索能力），因此其指标仍属自测结果。
 - 审计接口的认证与权限仍是"可选共享令牌 + 本机部署"级别，面向公网部署前需要补齐鉴权。
 
+## 项目文档
+
 - [系统架构](docs/architecture.md)
 - [数据来源](docs/data_sources.md)
 - [数据探索分析](docs/data_analysis.md)
@@ -546,4 +648,30 @@ scripts/migrate.sh target
 - [演示指南](docs/demo_guide.md)
 - [Phase 5 报告](docs/phase5_report.md)
 
-`.env.example` 仅用于说明未来配置项，不能直接连接生产服务。实际环境文件与原始数据不进入 Git。
+## 贡献指南
+
+本项目是面向 AI 应用开发岗位的作品集项目，以可复现、可审计为主，不追求功能堆叠。
+
+- **提交 Issue**：缺陷报告请写明复现步骤、期望/实际结果、`trace_id`（如涉及 Agent 行为）与环境信息；
+  功能建议请先说明它服务于哪条已交付能力，避免扩大范围。
+- **提交 PR**：从 `main` 切分支 → 保持单一主题 → 补充或更新测试 → 确保
+  `cd backend && python -m pytest -q` 通过（不要为通过而修改既有断言）。
+- **不要提交**：`.env`、任何密钥或令牌、原始数据与 PDF、`data/raw/**` 与 `data/processed/**` 的大文件。
+- **数据与结论**：新增或修改评估指标时，必须附可复现脚本与真实输出，禁止手写数字；
+  未实测的能力请标注为“未验证”，而不是省略。
+
+## 许可证
+
+本项目基于 [MIT License](LICENSE) 发布。
+第三方数据与文档的许可见 [数据来源](docs/data_sources.md) 与 [知识库来源](docs/knowledge_sources.md)，
+其中 MetroPT-3 数据集与 DOE 技术资料的版权归各自权利人所有，本仓库不再分发原始文件。
+
+## 致谢
+
+- [MetroPT-3](https://archive.ics.uci.edu/dataset/791/metropt+3+dataset)（UCI Machine Learning Repository）：
+  APC 空气压缩机组传感器与故障数据，本项目的工业数据底座。
+- [U.S. DOE Compressed Air Sourcebook](https://www.energy.gov/eere/amo/articles/compressed-air-sourcebook)：
+  压缩空气系统原理性技术资料，作为知识库的通用参考来源。
+- [pgvector](https://github.com/pgvector/pgvector)、[LangGraph](https://github.com/langchain-ai/langgraph)、
+  [Textual](https://github.com/Textualize/textual)、[FastAPI](https://fastapi.tiangolo.com/)、
+  [Ollama](https://ollama.com/)（`bge-m3` / `qwen2.5:7b-instruct`）：本项目所依赖的开源基础设施。

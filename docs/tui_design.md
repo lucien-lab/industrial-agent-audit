@@ -168,6 +168,10 @@ backend/app/tui/
 
 「深度探测」按钮会真实调用一次 Embedding 与 `qwen2.5:7b-instruct`（实测 164 ms / 238 ms）。
 
+**审计库迁移版本没有暴露到 API**（`/api/v1/audit/*` 只返回审计数据，不返回 `alembic_version`）。
+因此状态页对 Audit 只显示「可用 + 近 1 天审计条数」，这是「0008 已就绪」的间接证据；
+需要精确版本时用 `scripts/check_system.sh`（只读查询 `alembic_version`）。不为了显示整齐而猜版本号。
+
 ## 7. 统一 API Client
 
 `app/tui/client.py` 是 TUI 唯一的网络出口。

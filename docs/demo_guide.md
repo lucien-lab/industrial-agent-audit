@@ -52,10 +52,10 @@ LLM        unknown      配置 qwen2.5:7b-instruct（未探测）
 | 执行状态 | `completed` |
 | 意图 | `mixed_analysis` |
 | 回答方式 | `llm`（接地校验通过） |
-| 服务端耗时 | 8.5 s（本次；本机 3–9 s 波动） |
-| 工具调用 | `get_equipment_info` ok(31 ms) → `get_sensor_statistics` ok(13 ms) → `get_data_quality` ok(9 ms) → `get_fault_events` **empty**(5 ms) → `search_technical_knowledge` ok(948 ms) → `get_sensor_statistics` ok(10 ms) |
+| 服务端耗时 | 6.8 s（本次；本机 3–9 s 波动） |
+| 工具调用 | `get_equipment_info` ok(32 ms) → `get_sensor_statistics` ok(8 ms) → `get_data_quality` ok(5 ms) → `get_fault_events` **empty**(3 ms) → `search_technical_knowledge` ok(147 ms) → `get_sensor_statistics` ok(9 ms) |
 | 证据 | 15 条（D1…／K1…） |
-| trace_id | `ee3fec40353e4353af8eac8a6c73c832` |
+| trace_id | `da30700a9aed445a97cbc04d82d0b5c8` |
 
 回答的关键数据（真实值）：Motor_current 在 `[2020-04-17T00:00:00, 2020-04-18T00:00:00)`
 内 6,301 个样本，min 0.035 / max 6.36 / mean 0.4512 / 样本标准差 1.302；
@@ -88,7 +88,7 @@ E0002 node_start     E0004 node_end analyze            E0006-E0013 tool_call/too
 按 `5` 进入 **Audit Reports**（默认 Rule Only），trace_id 已自动带入，点「发起审计」。实测：
 
 ```
-审计 ID：aud-dc2217e2f0d5423759338921 · 状态 completed · 总体风险 none
+审计 ID：aud-8c974c95ab09944fcab7c38d · 状态 completed · 总体风险 none
 规则结论：11 条全部 PASS（0 FAIL / 0 UNKNOWN / 0 N/A）
 耗时：约 4 ms（确定性规则，无 LLM 调用）
 ```
@@ -101,9 +101,9 @@ E0002 node_start     E0004 node_end analyze            E0006-E0013 tool_call/too
 同一个 trace 切到 **Hybrid** 再跑一次。实测：
 
 ```
-审计 ID：aud-ffc037fc52e844ed1f0a418f · 状态 completed · 总体风险 none
+审计 ID：aud-aa2b5e1c01c9ccfc97cf617b · 状态 completed · 总体风险 none
 规则 16 条：15 PASS / 0 FAIL / 0 UNKNOWN / 1 N/A
-耗时：24.98 s（本机 7B 模型；以往实测 17–25 s）
+耗时：23.79 s（本机 7B 模型；多次运行 17–25 s）
 Judge：J_TASK_ALIGNMENT pass、J_EVIDENCE_SUPPORT pass、J_OVERREACH pass、
        J_INJECTION_INFLUENCE not_applicable、J_FALSE_REFUSAL pass
 ```

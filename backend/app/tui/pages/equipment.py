@@ -59,8 +59,8 @@ class EquipmentPage(BasePage):
             )
             with Horizontal(classes="controls"):
                 yield Select([], id="equipment-id", prompt="设备", allow_blank=True)
-                yield Input(value="2020-04-17T00:00:00", placeholder="start", id="equipment-start")
-                yield Input(value="2020-04-18T00:00:00", placeholder="end", id="equipment-end")
+                yield Input(placeholder="YYYY-MM-DDTHH:MM:SS", id="equipment-start")
+                yield Input(placeholder="YYYY-MM-DDTHH:MM:SS", id="equipment-end")
                 yield Input(value=DEFAULT_SENSORS, placeholder="sensors", id="equipment-sensors")
                 yield Button("查询", id="equipment-load", variant="primary")
             yield Static("", id="page-equipment-message", classes="message")
@@ -110,15 +110,21 @@ class EquipmentPage(BasePage):
         await self._query()
 
     def _apply_default_window(self, equipment: Equipment | None) -> None:
-        """用设备真实观测范围推导默认窗口（不使用硬编码日期）。"""
+        """用设备真实观测范围推导默认窗口（不使用硬编码日期）。
+
+        只在两个输入框都为空时填充；用户已经填过就不覆盖。
+        """
         if equipment is None:
             return
-        last = equipment.last_observed_at
         start_input = self.query_one("#equipment-start", Input)
         end_input = self.query_one("#equipment-end", Input)
-        if start_input.value and start_input.value != "2020-04-17T00:00:00":
+        if start_input.value.strip() or end_input.value.strip():
             return
+        last = equipment.last_observed_at
         if last is None:
+            self.set_message(
+                "该设备没有观测记录：请手动填写时间窗后再查询。", "warn"
+            )
             return
         end_day = datetime(last.year, last.month, last.day)
         start_day = end_day - timedelta(days=1)
