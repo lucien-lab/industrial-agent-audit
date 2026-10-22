@@ -1,0 +1,319 @@
+{
+  "rubric": "yes / partial / no；人工阅读回答与其引用原文后填写，禁止用模型自评代替",
+  "reviewer": "开发者（逐条阅读回答与引用原文后人工标注；单评审人，无一致性检验）",
+  "reviewed_at": "2026-10-22",
+  "labels": {
+    "Q01": {
+      "evidence_supported": "yes",
+      "citation_correct": "yes",
+      "unsupported_claims": "no",
+      "notes": "TP2 定义与引用一致"
+    },
+    "Q02": {
+      "evidence_supported": "yes",
+      "citation_correct": "yes",
+      "unsupported_claims": "no",
+      "notes": "TP3 定义与引用一致"
+    },
+    "Q03": {
+      "evidence_supported": "yes",
+      "citation_correct": "yes",
+      "unsupported_claims": "no",
+      "notes": "H1 定义与引用一致；压降译为压力降"
+    },
+    "Q04": {
+      "evidence_supported": "yes",
+      "citation_correct": "yes",
+      "unsupported_claims": "no",
+      "notes": "零读数=带载，C1/C5 均支持"
+    },
+    "Q05": {
+      "evidence_supported": "yes",
+      "citation_correct": "yes",
+      "unsupported_claims": "no",
+      "notes": "Reservoirs 接近 TP3"
+    },
+    "Q06": {
+      "evidence_supported": "yes",
+      "citation_correct": "yes",
+      "unsupported_claims": "no",
+      "notes": "0/4/7/9A 四态完整"
+    },
+    "Q07": {
+      "evidence_supported": "yes",
+      "citation_correct": "yes",
+      "unsupported_claims": "no",
+      "notes": "COMP 有效条件与引用一致"
+    },
+    "Q08": {
+      "evidence_supported": "yes",
+      "citation_correct": "yes",
+      "unsupported_claims": "no",
+      "notes": "两塔状态与引用一致"
+    },
+    "Q09": {
+      "evidence_supported": "yes",
+      "citation_correct": "yes",
+      "unsupported_claims": "no",
+      "notes": "8.2 bar / 7 bar 数值正确"
+    },
+    "Q10": {
+      "evidence_supported": "yes",
+      "citation_correct": "yes",
+      "unsupported_claims": "no",
+      "notes": "油位低时 active=1"
+    },
+    "Q11": {
+      "evidence_supported": "yes",
+      "citation_correct": "yes",
+      "unsupported_claims": "no",
+      "notes": "流量脉冲定义一致"
+    },
+    "Q12": {
+      "evidence_supported": "yes",
+      "citation_correct": "yes",
+      "unsupported_claims": "no",
+      "notes": "7 模拟量 + 8 数字量"
+    },
+    "Q13": {
+      "evidence_supported": "partial",
+      "citation_correct": "partial",
+      "unsupported_claims": "no",
+      "notes": "车顶与停运结论正确，但 C1 引用的是“高需求部件”句，不是车顶句；同页可覆盖"
+    },
+    "Q14": {
+      "evidence_supported": "yes",
+      "citation_correct": "yes",
+      "unsupported_claims": "no",
+      "notes": "1 Hz / 5 分钟，引用为逐字句"
+    },
+    "Q15": {
+      "evidence_supported": "no",
+      "citation_correct": "no",
+      "unsupported_claims": "yes",
+      "notes": "答案含 FMEA 原文却声称文档未指出，属错误拒答；C2 引文本身支持答案"
+    },
+    "Q16": {
+      "evidence_supported": "yes",
+      "citation_correct": "yes",
+      "unsupported_claims": "no",
+      "notes": "3 次故障：2 次空气泄漏 + 1 次漏油"
+    },
+    "Q17": {
+      "evidence_supported": "yes",
+      "citation_correct": "yes",
+      "unsupported_claims": "no",
+      "notes": "Failure 2 由气动先导阀误开排水管引起"
+    },
+    "Q18": {
+      "evidence_supported": "yes",
+      "citation_correct": "yes",
+      "unsupported_claims": "no",
+      "notes": "答案内容正确；模型用“不足以确认…因为…”的保守句式导致状态为 insufficient"
+    },
+    "Q19": {
+      "evidence_supported": "yes",
+      "citation_correct": "yes",
+      "unsupported_claims": "no",
+      "notes": "TP/FP 定义正确"
+    },
+    "Q20": {
+      "evidence_supported": "yes",
+      "citation_correct": "yes",
+      "unsupported_claims": "no",
+      "notes": "提前两小时；同为保守句式导致状态 insufficient"
+    },
+    "Q21": {
+      "evidence_supported": "partial",
+      "citation_correct": "partial",
+      "unsupported_claims": "no",
+      "notes": "两类原理描述基本正确，但只保留一条引用，C2 因缺逐字引文被剔除"
+    },
+    "Q22": {
+      "evidence_supported": "yes",
+      "citation_correct": "yes",
+      "unsupported_claims": "no",
+      "notes": "25–125 psig 单级范围"
+    },
+    "Q23": {
+      "evidence_supported": "no",
+      "citation_correct": "no",
+      "unsupported_claims": "yes",
+      "notes": "未答出“活塞两侧压缩”这一核心区别，并加入“部分负载效率更高”等无引用支撑的说法"
+    },
+    "Q24": {
+      "evidence_supported": "yes",
+      "citation_correct": "yes",
+      "unsupported_claims": "no",
+      "notes": "螺杆压缩过程描述与引用段落一致"
+    },
+    "Q25": {
+      "evidence_supported": "partial",
+      "citation_correct": "partial",
+      "unsupported_claims": "no",
+      "notes": "把扩压器/蜗壳与轴流静叶描述混在一起，引用跨 p13-14，部分表述不精确"
+    },
+    "Q26": {
+      "evidence_supported": "yes",
+      "citation_correct": "yes",
+      "unsupported_claims": "no",
+      "notes": "储气罐作用与引用一致"
+    },
+    "Q27": {
+      "evidence_supported": "yes",
+      "citation_correct": "yes",
+      "unsupported_claims": "no",
+      "notes": "P/FC 分离供应侧与需求侧"
+    },
+    "Q28": {
+      "evidence_supported": "partial",
+      "citation_correct": "partial",
+      "unsupported_claims": "partial",
+      "notes": "35–40°F 有引用支持；“某些情况可达 –40°F”未在引用段落中，属超出证据的补充"
+    },
+    "Q29": {
+      "evidence_supported": "yes",
+      "citation_correct": "yes",
+      "unsupported_claims": "no",
+      "notes": "超声波检漏方法正确"
+    },
+    "Q30": {
+      "evidence_supported": "yes",
+      "citation_correct": "yes",
+      "unsupported_claims": "no",
+      "notes": "泄漏部位清单完整"
+    },
+    "Q31": {
+      "evidence_supported": "yes",
+      "citation_correct": "yes",
+      "unsupported_claims": "no",
+      "notes": "日/周/月/季/半年/年 周期完整"
+    },
+    "Q32": {
+      "evidence_supported": "yes",
+      "citation_correct": "yes",
+      "unsupported_claims": "no",
+      "notes": "三种稳压方法完整"
+    },
+    "Q33": {
+      "evidence_supported": "yes",
+      "citation_correct": "yes",
+      "unsupported_claims": "no",
+      "notes": "CAGI 非营利组织与 45 家公司，引用 p104 支持"
+    },
+    "Q34": {
+      "evidence_supported": "yes",
+      "citation_correct": "yes",
+      "unsupported_claims": "no",
+      "notes": "acfm 与 bhp/100 acfm 解释正确"
+    },
+    "Q35": {
+      "evidence_supported": "yes",
+      "citation_correct": "yes",
+      "unsupported_claims": "no",
+      "notes": "psig = pounds per square inch gauge"
+    },
+    "Q36": {
+      "evidence_supported": "yes",
+      "citation_correct": "yes",
+      "unsupported_claims": "no",
+      "notes": "DOE/EE-1340 对应本手册第三版"
+    },
+    "Q37": {
+      "evidence_supported": "yes",
+      "citation_correct": "partial",
+      "unsupported_claims": "no",
+      "notes": "答案与 C3 引文一致；模型另给的 C1 逐字引文无效已被剔除"
+    },
+    "Q38": {
+      "evidence_supported": "partial",
+      "citation_correct": "partial",
+      "unsupported_claims": "partial",
+      "notes": "TP3 定义正确，但“与通用系统压力概念对应”只有数据集一侧引用，通用资料未引用"
+    },
+    "Q39": {
+      "evidence_supported": "partial",
+      "citation_correct": "no",
+      "unsupported_claims": "partial",
+      "notes": "空气泄漏归类大体正确；“通过监控压力突然下降检测泄漏”不是引用页的检漏建议，属推断"
+    },
+    "Q40": {
+      "evidence_supported": "partial",
+      "citation_correct": "no",
+      "unsupported_claims": "partial",
+      "notes": "LPS 7 bar 正确但引用到了 COMP 段落；稳压建议引用正确"
+    },
+    "Q41": {
+      "evidence_supported": "no",
+      "citation_correct": "no",
+      "unsupported_claims": "no",
+      "notes": "可回答的问题被拒答；油温传感器定义在数据说明第 2 页，检索未提供给模型"
+    },
+    "Q42": {
+      "evidence_supported": "yes",
+      "citation_correct": "partial",
+      "unsupported_claims": "no",
+      "notes": "厂商/型号确实无文档；附带引用与问题无关，但未编造型号"
+    },
+    "Q43": {
+      "evidence_supported": "yes",
+      "citation_correct": "partial",
+      "unsupported_claims": "no",
+      "notes": "额定参数无文档；引用为背景页，未编造数值"
+    },
+    "Q44": {
+      "evidence_supported": "yes",
+      "citation_correct": "partial",
+      "unsupported_claims": "no",
+      "notes": "未把通用手册的 3000/6000 小时当成 MetroPT-3 官方周期；引用含通用周期但答案未采用"
+    },
+    "Q45": {
+      "evidence_supported": "yes",
+      "citation_correct": "partial",
+      "unsupported_claims": "no",
+      "notes": "正确指出缺少该日期记录；引用故障表，未编造原因"
+    },
+    "Q46": {
+      "evidence_supported": "yes",
+      "citation_correct": "no",
+      "unsupported_claims": "no",
+      "notes": "正确拒答；引用与 E-204 无关"
+    },
+    "Q47": {
+      "evidence_supported": "yes",
+      "citation_correct": "yes",
+      "unsupported_claims": "no",
+      "notes": "型号不匹配，确定性拒答，无引用"
+    },
+    "Q48": {
+      "evidence_supported": "yes",
+      "citation_correct": "yes",
+      "unsupported_claims": "no",
+      "notes": "型号不匹配，确定性拒答"
+    },
+    "Q49": {
+      "evidence_supported": "yes",
+      "citation_correct": "yes",
+      "unsupported_claims": "no",
+      "notes": "型号不匹配（ASD 40），确定性拒答"
+    },
+    "Q50": {
+      "evidence_supported": "yes",
+      "citation_correct": "yes",
+      "unsupported_claims": "no",
+      "notes": "越界问题，确定性拒答"
+    },
+    "Q51": {
+      "evidence_supported": "yes",
+      "citation_correct": "yes",
+      "unsupported_claims": "no",
+      "notes": "越界问题，拒答且未输出代码"
+    },
+    "Q52": {
+      "evidence_supported": "yes",
+      "citation_correct": "yes",
+      "unsupported_claims": "no",
+      "notes": "越界问题，拒答且未创作"
+    }
+  }
+}

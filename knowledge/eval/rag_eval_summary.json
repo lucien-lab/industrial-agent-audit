@@ -1,0 +1,2361 @@
+{
+  "evaluated_at": "2026-10-22T12:54:28+0800",
+  "question_count": 52,
+  "embedding_model": "bge-m3",
+  "embedding_version": "bge-m3-1024-v1",
+  "llm_model": "qwen2.5:7b-instruct",
+  "retrieval": {
+    "structural-v1": {
+      "vector": {
+        "overall": {
+          "questions": 41,
+          "recall@5": 0.878,
+          "hit@5": 0.9268,
+          "mrr@10": 0.6848,
+          "precision@5": 0.3707
+        },
+        "mean_elapsed_ms": 119.46,
+        "by_category": {
+          "identifier": {
+            "questions": 5,
+            "recall@5": 0.8,
+            "hit@5": 0.8,
+            "mrr@10": 0.6952,
+            "precision@5": 0.32
+          },
+          "irrelevant": {
+            "questions": 0
+          },
+          "model_mismatch": {
+            "questions": 0
+          },
+          "multi_doc": {
+            "questions": 4,
+            "recall@5": 0.5,
+            "hit@5": 1.0,
+            "mrr@10": 0.5083,
+            "precision@5": 0.35
+          },
+          "paper": {
+            "questions": 8,
+            "recall@5": 1.0,
+            "hit@5": 1.0,
+            "mrr@10": 0.8438,
+            "precision@5": 0.4
+          },
+          "principle": {
+            "questions": 12,
+            "recall@5": 0.9167,
+            "hit@5": 0.9167,
+            "mrr@10": 0.6069,
+            "precision@5": 0.35
+          },
+          "sensor_field": {
+            "questions": 12,
+            "recall@5": 0.9167,
+            "hit@5": 0.9167,
+            "mrr@10": 0.7111,
+            "precision@5": 0.4
+          },
+          "unknown": {
+            "questions": 0
+          }
+        }
+      },
+      "keyword": {
+        "overall": {
+          "questions": 41,
+          "recall@5": 0.561,
+          "hit@5": 0.5854,
+          "mrr@10": 0.4858,
+          "precision@5": 0.2577
+        },
+        "mean_elapsed_ms": 10.71,
+        "by_category": {
+          "identifier": {
+            "questions": 5,
+            "recall@5": 1.0,
+            "hit@5": 1.0,
+            "mrr@10": 0.75,
+            "precision@5": 0.6533
+          },
+          "irrelevant": {
+            "questions": 0
+          },
+          "model_mismatch": {
+            "questions": 0
+          },
+          "multi_doc": {
+            "questions": 4,
+            "recall@5": 0.25,
+            "hit@5": 0.5,
+            "mrr@10": 0.5,
+            "precision@5": 0.1333
+          },
+          "paper": {
+            "questions": 8,
+            "recall@5": 0.5,
+            "hit@5": 0.5,
+            "mrr@10": 0.4167,
+            "precision@5": 0.225
+          },
+          "principle": {
+            "questions": 12,
+            "recall@5": 0.1667,
+            "hit@5": 0.1667,
+            "mrr@10": 0.0694,
+            "precision@5": 0.0667
+          },
+          "sensor_field": {
+            "questions": 12,
+            "recall@5": 0.9167,
+            "hit@5": 0.9167,
+            "mrr@10": 0.8333,
+            "precision@5": 0.3472
+          },
+          "unknown": {
+            "questions": 0
+          }
+        }
+      },
+      "hybrid": {
+        "overall": {
+          "questions": 41,
+          "recall@5": 0.939,
+          "hit@5": 0.9756,
+          "mrr@10": 0.7841,
+          "precision@5": 0.3902
+        },
+        "mean_elapsed_ms": 128.05,
+        "by_category": {
+          "identifier": {
+            "questions": 5,
+            "recall@5": 1.0,
+            "hit@5": 1.0,
+            "mrr@10": 1.0,
+            "precision@5": 0.48
+          },
+          "irrelevant": {
+            "questions": 0
+          },
+          "model_mismatch": {
+            "questions": 0
+          },
+          "multi_doc": {
+            "questions": 4,
+            "recall@5": 0.625,
+            "hit@5": 1.0,
+            "mrr@10": 0.5083,
+            "precision@5": 0.35
+          },
+          "paper": {
+            "questions": 8,
+            "recall@5": 1.0,
+            "hit@5": 1.0,
+            "mrr@10": 0.8438,
+            "precision@5": 0.4
+          },
+          "principle": {
+            "questions": 12,
+            "recall@5": 0.9167,
+            "hit@5": 0.9167,
+            "mrr@10": 0.6556,
+            "precision@5": 0.35
+          },
+          "sensor_field": {
+            "questions": 12,
+            "recall@5": 1.0,
+            "hit@5": 1.0,
+            "mrr@10": 0.875,
+            "precision@5": 0.4
+          },
+          "unknown": {
+            "questions": 0
+          }
+        }
+      }
+    },
+    "fixed-v1": {
+      "vector": {
+        "overall": {
+          "questions": 41,
+          "recall@5": 0.8293,
+          "hit@5": 0.8537,
+          "mrr@10": 0.6469,
+          "precision@5": 0.278
+        },
+        "mean_elapsed_ms": 115.18,
+        "by_category": {
+          "identifier": {
+            "questions": 5,
+            "recall@5": 0.8,
+            "hit@5": 0.8,
+            "mrr@10": 0.5352,
+            "precision@5": 0.36
+          },
+          "irrelevant": {
+            "questions": 0
+          },
+          "model_mismatch": {
+            "questions": 0
+          },
+          "multi_doc": {
+            "questions": 4,
+            "recall@5": 0.5,
+            "hit@5": 0.75,
+            "mrr@10": 0.4732,
+            "precision@5": 0.25
+          },
+          "paper": {
+            "questions": 8,
+            "recall@5": 1.0,
+            "hit@5": 1.0,
+            "mrr@10": 0.9375,
+            "precision@5": 0.35
+          },
+          "principle": {
+            "questions": 12,
+            "recall@5": 0.8333,
+            "hit@5": 0.8333,
+            "mrr@10": 0.621,
+            "precision@5": 0.2833
+          },
+          "sensor_field": {
+            "questions": 12,
+            "recall@5": 0.8333,
+            "hit@5": 0.8333,
+            "mrr@10": 0.5833,
+            "precision@5": 0.2
+          },
+          "unknown": {
+            "questions": 0
+          }
+        }
+      },
+      "keyword": {
+        "overall": {
+          "questions": 41,
+          "recall@5": 0.561,
+          "hit@5": 0.5854,
+          "mrr@10": 0.4675,
+          "precision@5": 0.2447
+        },
+        "mean_elapsed_ms": 12.95,
+        "by_category": {
+          "identifier": {
+            "questions": 5,
+            "recall@5": 1.0,
+            "hit@5": 1.0,
+            "mrr@10": 0.9,
+            "precision@5": 0.58
+          },
+          "irrelevant": {
+            "questions": 0
+          },
+          "model_mismatch": {
+            "questions": 0
+          },
+          "multi_doc": {
+            "questions": 4,
+            "recall@5": 0.25,
+            "hit@5": 0.5,
+            "mrr@10": 0.5,
+            "precision@5": 0.175
+          },
+          "paper": {
+            "questions": 8,
+            "recall@5": 0.5,
+            "hit@5": 0.5,
+            "mrr@10": 0.3229,
+            "precision@5": 0.225
+          },
+          "principle": {
+            "questions": 12,
+            "recall@5": 0.1667,
+            "hit@5": 0.1667,
+            "mrr@10": 0.0694,
+            "precision@5": 0.05
+          },
+          "sensor_field": {
+            "questions": 12,
+            "recall@5": 0.9167,
+            "hit@5": 0.9167,
+            "mrr@10": 0.7708,
+            "precision@5": 0.3361
+          },
+          "unknown": {
+            "questions": 0
+          }
+        }
+      },
+      "hybrid": {
+        "overall": {
+          "questions": 41,
+          "recall@5": 0.878,
+          "hit@5": 0.9024,
+          "mrr@10": 0.7686,
+          "precision@5": 0.3366
+        },
+        "mean_elapsed_ms": 130.79,
+        "by_category": {
+          "identifier": {
+            "questions": 5,
+            "recall@5": 1.0,
+            "hit@5": 1.0,
+            "mrr@10": 0.9,
+            "precision@5": 0.44
+          },
+          "irrelevant": {
+            "questions": 0
+          },
+          "model_mismatch": {
+            "questions": 0
+          },
+          "multi_doc": {
+            "questions": 4,
+            "recall@5": 0.5,
+            "hit@5": 0.75,
+            "mrr@10": 0.4732,
+            "precision@5": 0.3
+          },
+          "paper": {
+            "questions": 8,
+            "recall@5": 1.0,
+            "hit@5": 1.0,
+            "mrr@10": 0.9375,
+            "precision@5": 0.4
+          },
+          "principle": {
+            "questions": 12,
+            "recall@5": 0.8333,
+            "hit@5": 0.8333,
+            "mrr@10": 0.6627,
+            "precision@5": 0.3167
+          },
+          "sensor_field": {
+            "questions": 12,
+            "recall@5": 0.9167,
+            "hit@5": 0.9167,
+            "mrr@10": 0.8056,
+            "precision@5": 0.2833
+          },
+          "unknown": {
+            "questions": 0
+          }
+        }
+      }
+    }
+  },
+  "generation": {
+    "summary": {
+      "questions": 52,
+      "answered": 37,
+      "insufficient_evidence": 15,
+      "no_evidence": 0,
+      "llm_failures": 0,
+      "citation_valid_rate": 1.0,
+      "quote_supported_all_rate": 0.6154,
+      "quote_supported_not_provided": 10,
+      "quote_supported_failed": 4,
+      "citation_matches_expected_rate": 0.7805,
+      "mean_expected_point_coverage": 0.8679,
+      "must_refuse_questions": 11,
+      "refusal_correct_rate": 1.0,
+      "forbidden_term_questions": 0,
+      "avg_retrieval_ms": 123.23,
+      "avg_llm_ms": 2124.42,
+      "avg_total_ms": 2247.91
+    },
+    "manual_review": {
+      "reviewed_questions": 52,
+      "reviewer": "开发者（逐条阅读回答与引用原文后人工标注；单评审人，无一致性检验）",
+      "reviewed_at": "2026-10-22",
+      "distribution": {
+        "evidence_supported": {
+          "yes": 42,
+          "partial": 7,
+          "no": 3
+        },
+        "citation_correct": {
+          "yes": 36,
+          "partial": 10,
+          "no": 6
+        },
+        "unsupported_claims": {
+          "no": 46,
+          "yes": 2,
+          "partial": 4
+        }
+      }
+    },
+    "questions": [
+      {
+        "id": "Q01",
+        "category": "sensor_field",
+        "answerable": true,
+        "must_refuse": false,
+        "status": "answered",
+        "llm_status": "ok",
+        "citation_validation": {
+          "valid": true,
+          "unknown_labels": [],
+          "insufficient_evidence": false,
+          "quote_supported": "all",
+          "unverified_labels": [],
+          "remapped_labels": {}
+        },
+        "citations": [
+          {
+            "label": "C1",
+            "doc_key": "metropt3-data-description",
+            "page_start": 2,
+            "page_end": 2
+          }
+        ],
+        "citation_matches_expected": true,
+        "expected_point_coverage": {
+          "matched": 1,
+          "total": 1
+        },
+        "forbidden_hits": [],
+        "timings_ms": {
+          "retrieval": 119.85,
+          "embedding": 107.15,
+          "llm": 2809.45,
+          "total": 2929.6
+        }
+      },
+      {
+        "id": "Q02",
+        "category": "sensor_field",
+        "answerable": true,
+        "must_refuse": false,
+        "status": "answered",
+        "llm_status": "ok",
+        "citation_validation": {
+          "valid": true,
+          "unknown_labels": [],
+          "insufficient_evidence": false,
+          "quote_supported": "all",
+          "unverified_labels": [],
+          "remapped_labels": {}
+        },
+        "citations": [
+          {
+            "label": "C1",
+            "doc_key": "metropt3-data-description",
+            "page_start": 2,
+            "page_end": 2
+          }
+        ],
+        "citation_matches_expected": true,
+        "expected_point_coverage": {
+          "matched": 1,
+          "total": 1
+        },
+        "forbidden_hits": [],
+        "timings_ms": {
+          "retrieval": 120.39,
+          "embedding": 105.04,
+          "llm": 1489.59,
+          "total": 1610.24
+        }
+      },
+      {
+        "id": "Q03",
+        "category": "sensor_field",
+        "answerable": true,
+        "must_refuse": false,
+        "status": "answered",
+        "llm_status": "ok",
+        "citation_validation": {
+          "valid": true,
+          "unknown_labels": [],
+          "insufficient_evidence": false,
+          "quote_supported": "all",
+          "unverified_labels": [],
+          "remapped_labels": {}
+        },
+        "citations": [
+          {
+            "label": "C2",
+            "doc_key": "metropt-dataset-paper",
+            "page_start": 2,
+            "page_end": 2
+          }
+        ],
+        "citation_matches_expected": false,
+        "expected_point_coverage": {
+          "matched": 2,
+          "total": 2
+        },
+        "forbidden_hits": [],
+        "timings_ms": {
+          "retrieval": 130.64,
+          "embedding": 115.15,
+          "llm": 2084.36,
+          "total": 2215.25
+        }
+      },
+      {
+        "id": "Q04",
+        "category": "sensor_field",
+        "answerable": true,
+        "must_refuse": false,
+        "status": "answered",
+        "llm_status": "ok",
+        "citation_validation": {
+          "valid": true,
+          "unknown_labels": [],
+          "insufficient_evidence": false,
+          "quote_supported": "all",
+          "unverified_labels": [],
+          "remapped_labels": {}
+        },
+        "citations": [
+          {
+            "label": "C1",
+            "doc_key": "metropt3-data-description",
+            "page_start": 2,
+            "page_end": 2
+          },
+          {
+            "label": "C5",
+            "doc_key": "metropt-dataset-paper",
+            "page_start": 2,
+            "page_end": 2
+          }
+        ],
+        "citation_matches_expected": true,
+        "expected_point_coverage": {
+          "matched": 1,
+          "total": 1
+        },
+        "forbidden_hits": [],
+        "timings_ms": {
+          "retrieval": 185.8,
+          "embedding": 140.0,
+          "llm": 2051.5,
+          "total": 2237.68
+        }
+      },
+      {
+        "id": "Q05",
+        "category": "sensor_field",
+        "answerable": true,
+        "must_refuse": false,
+        "status": "answered",
+        "llm_status": "ok",
+        "citation_validation": {
+          "valid": true,
+          "unknown_labels": [],
+          "insufficient_evidence": false,
+          "quote_supported": "all",
+          "unverified_labels": [],
+          "remapped_labels": {}
+        },
+        "citations": [
+          {
+            "label": "C1",
+            "doc_key": "metropt3-data-description",
+            "page_start": 2,
+            "page_end": 2
+          }
+        ],
+        "citation_matches_expected": true,
+        "expected_point_coverage": {
+          "matched": 1,
+          "total": 1
+        },
+        "forbidden_hits": [],
+        "timings_ms": {
+          "retrieval": 120.9,
+          "embedding": 106.95,
+          "llm": 1841.24,
+          "total": 1962.35
+        }
+      },
+      {
+        "id": "Q06",
+        "category": "sensor_field",
+        "answerable": true,
+        "must_refuse": false,
+        "status": "answered",
+        "llm_status": "ok",
+        "citation_validation": {
+          "valid": true,
+          "unknown_labels": [],
+          "insufficient_evidence": false,
+          "quote_supported": "all",
+          "unverified_labels": [],
+          "remapped_labels": {}
+        },
+        "citations": [
+          {
+            "label": "C1",
+            "doc_key": "metropt3-data-description",
+            "page_start": 2,
+            "page_end": 2
+          },
+          {
+            "label": "C3",
+            "doc_key": "metropt-dataset-paper",
+            "page_start": 2,
+            "page_end": 2
+          }
+        ],
+        "citation_matches_expected": true,
+        "expected_point_coverage": {
+          "matched": 4,
+          "total": 4
+        },
+        "forbidden_hits": [],
+        "timings_ms": {
+          "retrieval": 139.04,
+          "embedding": 115.36,
+          "llm": 3721.69,
+          "total": 3861.05
+        }
+      },
+      {
+        "id": "Q07",
+        "category": "sensor_field",
+        "answerable": true,
+        "must_refuse": false,
+        "status": "answered",
+        "llm_status": "ok",
+        "citation_validation": {
+          "valid": true,
+          "unknown_labels": [],
+          "insufficient_evidence": false,
+          "quote_supported": "all",
+          "unverified_labels": [],
+          "remapped_labels": {}
+        },
+        "citations": [
+          {
+            "label": "C1",
+            "doc_key": "metropt-dataset-paper",
+            "page_start": 2,
+            "page_end": 3
+          },
+          {
+            "label": "C2",
+            "doc_key": "metropt3-data-description",
+            "page_start": 2,
+            "page_end": 2
+          }
+        ],
+        "citation_matches_expected": true,
+        "expected_point_coverage": {
+          "matched": 1,
+          "total": 2
+        },
+        "forbidden_hits": [],
+        "timings_ms": {
+          "retrieval": 130.31,
+          "embedding": 114.56,
+          "llm": 2345.4,
+          "total": 2476.0
+        }
+      },
+      {
+        "id": "Q08",
+        "category": "sensor_field",
+        "answerable": true,
+        "must_refuse": false,
+        "status": "answered",
+        "llm_status": "ok",
+        "citation_validation": {
+          "valid": true,
+          "unknown_labels": [],
+          "insufficient_evidence": false,
+          "quote_supported": "all",
+          "unverified_labels": [],
+          "remapped_labels": {}
+        },
+        "citations": [
+          {
+            "label": "C3",
+            "doc_key": "metropt-dataset-paper",
+            "page_start": 2,
+            "page_end": 3
+          }
+        ],
+        "citation_matches_expected": false,
+        "expected_point_coverage": {
+          "matched": 2,
+          "total": 2
+        },
+        "forbidden_hits": [],
+        "timings_ms": {
+          "retrieval": 132.83,
+          "embedding": 115.31,
+          "llm": 1860.34,
+          "total": 1993.47
+        }
+      },
+      {
+        "id": "Q09",
+        "category": "sensor_field",
+        "answerable": true,
+        "must_refuse": false,
+        "status": "answered",
+        "llm_status": "ok",
+        "citation_validation": {
+          "valid": true,
+          "unknown_labels": [],
+          "insufficient_evidence": false,
+          "quote_supported": "all",
+          "unverified_labels": [],
+          "remapped_labels": {}
+        },
+        "citations": [
+          {
+            "label": "C2",
+            "doc_key": "metropt3-data-description",
+            "page_start": 2,
+            "page_end": 3
+          }
+        ],
+        "citation_matches_expected": true,
+        "expected_point_coverage": {
+          "matched": 2,
+          "total": 2
+        },
+        "forbidden_hits": [],
+        "timings_ms": {
+          "retrieval": 133.87,
+          "embedding": 115.24,
+          "llm": 2384.16,
+          "total": 2518.31
+        }
+      },
+      {
+        "id": "Q10",
+        "category": "sensor_field",
+        "answerable": true,
+        "must_refuse": false,
+        "status": "answered",
+        "llm_status": "ok",
+        "citation_validation": {
+          "valid": true,
+          "unknown_labels": [],
+          "insufficient_evidence": false,
+          "quote_supported": "all",
+          "unverified_labels": [],
+          "remapped_labels": {}
+        },
+        "citations": [
+          {
+            "label": "C3",
+            "doc_key": "metropt-dataset-paper",
+            "page_start": 3,
+            "page_end": 3
+          }
+        ],
+        "citation_matches_expected": false,
+        "expected_point_coverage": {
+          "matched": 2,
+          "total": 2
+        },
+        "forbidden_hits": [],
+        "timings_ms": {
+          "retrieval": 122.05,
+          "embedding": 105.03,
+          "llm": 1503.91,
+          "total": 1626.2
+        }
+      },
+      {
+        "id": "Q11",
+        "category": "sensor_field",
+        "answerable": true,
+        "must_refuse": false,
+        "status": "answered",
+        "llm_status": "ok",
+        "citation_validation": {
+          "valid": true,
+          "unknown_labels": [],
+          "insufficient_evidence": false,
+          "quote_supported": "all",
+          "unverified_labels": [],
+          "remapped_labels": {
+            "C2": "C3"
+          }
+        },
+        "citations": [
+          {
+            "label": "C1",
+            "doc_key": "metropt3-data-description",
+            "page_start": 3,
+            "page_end": 3
+          },
+          {
+            "label": "C3",
+            "doc_key": "metropt-dataset-paper",
+            "page_start": 3,
+            "page_end": 3
+          }
+        ],
+        "citation_matches_expected": true,
+        "expected_point_coverage": {
+          "matched": 2,
+          "total": 2
+        },
+        "forbidden_hits": [],
+        "timings_ms": {
+          "retrieval": 119.06,
+          "embedding": 105.79,
+          "llm": 3641.06,
+          "total": 3760.42
+        }
+      },
+      {
+        "id": "Q12",
+        "category": "sensor_field",
+        "answerable": true,
+        "must_refuse": false,
+        "status": "answered",
+        "llm_status": "ok",
+        "citation_validation": {
+          "valid": true,
+          "unknown_labels": [],
+          "insufficient_evidence": false,
+          "quote_supported": "partial",
+          "unverified_labels": [
+            "C2"
+          ],
+          "remapped_labels": {}
+        },
+        "citations": [
+          {
+            "label": "C3",
+            "doc_key": "metropt3-data-description",
+            "page_start": 2,
+            "page_end": 2
+          }
+        ],
+        "citation_matches_expected": true,
+        "expected_point_coverage": {
+          "matched": 2,
+          "total": 2
+        },
+        "forbidden_hits": [],
+        "timings_ms": {
+          "retrieval": 122.12,
+          "embedding": 105.07,
+          "llm": 2899.33,
+          "total": 3021.72
+        }
+      },
+      {
+        "id": "Q13",
+        "category": "paper",
+        "answerable": true,
+        "must_refuse": false,
+        "status": "answered",
+        "llm_status": "ok",
+        "citation_validation": {
+          "valid": true,
+          "unknown_labels": [],
+          "insufficient_evidence": false,
+          "quote_supported": "all",
+          "unverified_labels": [],
+          "remapped_labels": {}
+        },
+        "citations": [
+          {
+            "label": "C1",
+            "doc_key": "metropt-dataset-paper",
+            "page_start": 1,
+            "page_end": 1
+          },
+          {
+            "label": "C2",
+            "doc_key": "metropt-dataset-paper",
+            "page_start": 1,
+            "page_end": 1
+          }
+        ],
+        "citation_matches_expected": true,
+        "expected_point_coverage": {
+          "matched": 3,
+          "total": 3
+        },
+        "forbidden_hits": [],
+        "timings_ms": {
+          "retrieval": 123.7,
+          "embedding": 105.97,
+          "llm": 3811.79,
+          "total": 3935.81
+        }
+      },
+      {
+        "id": "Q14",
+        "category": "paper",
+        "answerable": true,
+        "must_refuse": false,
+        "status": "answered",
+        "llm_status": "ok",
+        "citation_validation": {
+          "valid": true,
+          "unknown_labels": [],
+          "insufficient_evidence": false,
+          "quote_supported": "all",
+          "unverified_labels": [],
+          "remapped_labels": {}
+        },
+        "citations": [
+          {
+            "label": "C4",
+            "doc_key": "metropt-dataset-paper",
+            "page_start": 2,
+            "page_end": 2
+          }
+        ],
+        "citation_matches_expected": true,
+        "expected_point_coverage": {
+          "matched": 2,
+          "total": 2
+        },
+        "forbidden_hits": [],
+        "timings_ms": {
+          "retrieval": 128.55,
+          "embedding": 109.07,
+          "llm": 1780.17,
+          "total": 1908.98
+        }
+      },
+      {
+        "id": "Q15",
+        "category": "paper",
+        "answerable": true,
+        "must_refuse": false,
+        "status": "insufficient_evidence",
+        "llm_status": "ok",
+        "citation_validation": {
+          "valid": true,
+          "unknown_labels": [],
+          "insufficient_evidence": true,
+          "quote_supported": "not_provided",
+          "unverified_labels": [],
+          "remapped_labels": {}
+        },
+        "citations": [
+          {
+            "label": "C1",
+            "doc_key": "metropt-dataset-paper",
+            "page_start": 7,
+            "page_end": 7
+          },
+          {
+            "label": "C2",
+            "doc_key": "metropt-dataset-paper",
+            "page_start": 2,
+            "page_end": 2
+          },
+          {
+            "label": "C3",
+            "doc_key": "metropt3-data-description",
+            "page_start": 1,
+            "page_end": 2
+          },
+          {
+            "label": "C4",
+            "doc_key": "metropt-dataset-paper",
+            "page_start": 6,
+            "page_end": 7
+          }
+        ],
+        "citation_matches_expected": true,
+        "expected_point_coverage": {
+          "matched": 0,
+          "total": 2
+        },
+        "forbidden_hits": [],
+        "timings_ms": {
+          "retrieval": 125.59,
+          "embedding": 109.8,
+          "llm": 1286.38,
+          "total": 1412.22
+        }
+      },
+      {
+        "id": "Q16",
+        "category": "paper",
+        "answerable": true,
+        "must_refuse": false,
+        "status": "answered",
+        "llm_status": "ok",
+        "citation_validation": {
+          "valid": true,
+          "unknown_labels": [],
+          "insufficient_evidence": false,
+          "quote_supported": "all",
+          "unverified_labels": [],
+          "remapped_labels": {}
+        },
+        "citations": [
+          {
+            "label": "C1",
+            "doc_key": "metropt-dataset-paper",
+            "page_start": 5,
+            "page_end": 5
+          }
+        ],
+        "citation_matches_expected": true,
+        "expected_point_coverage": {
+          "matched": 3,
+          "total": 3
+        },
+        "forbidden_hits": [],
+        "timings_ms": {
+          "retrieval": 125.55,
+          "embedding": 104.81,
+          "llm": 1817.72,
+          "total": 1943.5
+        }
+      },
+      {
+        "id": "Q17",
+        "category": "paper",
+        "answerable": true,
+        "must_refuse": false,
+        "status": "answered",
+        "llm_status": "ok",
+        "citation_validation": {
+          "valid": true,
+          "unknown_labels": [],
+          "insufficient_evidence": false,
+          "quote_supported": "all",
+          "unverified_labels": [],
+          "remapped_labels": {}
+        },
+        "citations": [
+          {
+            "label": "C3",
+            "doc_key": "metropt-dataset-paper",
+            "page_start": 5,
+            "page_end": 5
+          }
+        ],
+        "citation_matches_expected": true,
+        "expected_point_coverage": {
+          "matched": 1,
+          "total": 2
+        },
+        "forbidden_hits": [],
+        "timings_ms": {
+          "retrieval": 120.73,
+          "embedding": 105.53,
+          "llm": 2094.98,
+          "total": 2215.99
+        }
+      },
+      {
+        "id": "Q18",
+        "category": "paper",
+        "answerable": true,
+        "must_refuse": false,
+        "status": "insufficient_evidence",
+        "llm_status": "ok",
+        "citation_validation": {
+          "valid": true,
+          "unknown_labels": [],
+          "insufficient_evidence": true,
+          "quote_supported": "all",
+          "unverified_labels": [],
+          "remapped_labels": {}
+        },
+        "citations": [
+          {
+            "label": "C4",
+            "doc_key": "metropt-dataset-paper",
+            "page_start": 5,
+            "page_end": 5
+          }
+        ],
+        "citation_matches_expected": true,
+        "expected_point_coverage": {
+          "matched": 3,
+          "total": 3
+        },
+        "forbidden_hits": [],
+        "timings_ms": {
+          "retrieval": 134.03,
+          "embedding": 114.03,
+          "llm": 2072.26,
+          "total": 2206.58
+        }
+      },
+      {
+        "id": "Q19",
+        "category": "paper",
+        "answerable": true,
+        "must_refuse": false,
+        "status": "answered",
+        "llm_status": "ok",
+        "citation_validation": {
+          "valid": true,
+          "unknown_labels": [],
+          "insufficient_evidence": false,
+          "quote_supported": "all",
+          "unverified_labels": [],
+          "remapped_labels": {}
+        },
+        "citations": [
+          {
+            "label": "C2",
+            "doc_key": "metropt-dataset-paper",
+            "page_start": 5,
+            "page_end": 6
+          }
+        ],
+        "citation_matches_expected": true,
+        "expected_point_coverage": {
+          "matched": 1,
+          "total": 2
+        },
+        "forbidden_hits": [],
+        "timings_ms": {
+          "retrieval": 124.5,
+          "embedding": 106.73,
+          "llm": 2286.2,
+          "total": 2410.96
+        }
+      },
+      {
+        "id": "Q20",
+        "category": "paper",
+        "answerable": true,
+        "must_refuse": false,
+        "status": "insufficient_evidence",
+        "llm_status": "ok",
+        "citation_validation": {
+          "valid": true,
+          "unknown_labels": [],
+          "insufficient_evidence": true,
+          "quote_supported": "all",
+          "unverified_labels": [],
+          "remapped_labels": {}
+        },
+        "citations": [
+          {
+            "label": "C1",
+            "doc_key": "metropt-dataset-paper",
+            "page_start": 5,
+            "page_end": 6
+          }
+        ],
+        "citation_matches_expected": true,
+        "expected_point_coverage": {
+          "matched": 1,
+          "total": 1
+        },
+        "forbidden_hits": [],
+        "timings_ms": {
+          "retrieval": 130.58,
+          "embedding": 114.55,
+          "llm": 1798.27,
+          "total": 1929.1
+        }
+      },
+      {
+        "id": "Q21",
+        "category": "principle",
+        "answerable": true,
+        "must_refuse": false,
+        "status": "answered",
+        "llm_status": "ok",
+        "citation_validation": {
+          "valid": true,
+          "unknown_labels": [],
+          "insufficient_evidence": false,
+          "quote_supported": "partial",
+          "unverified_labels": [
+            "C2"
+          ],
+          "remapped_labels": {}
+        },
+        "citations": [
+          {
+            "label": "C1",
+            "doc_key": "doe-compressed-air-sourcebook",
+            "page_start": 10,
+            "page_end": 10
+          }
+        ],
+        "citation_matches_expected": true,
+        "expected_point_coverage": {
+          "matched": 3,
+          "total": 3
+        },
+        "forbidden_hits": [],
+        "timings_ms": {
+          "retrieval": 133.9,
+          "embedding": 115.49,
+          "llm": 4133.45,
+          "total": 4267.79
+        }
+      },
+      {
+        "id": "Q22",
+        "category": "principle",
+        "answerable": true,
+        "must_refuse": false,
+        "status": "answered",
+        "llm_status": "ok",
+        "citation_validation": {
+          "valid": true,
+          "unknown_labels": [],
+          "insufficient_evidence": false,
+          "quote_supported": "all",
+          "unverified_labels": [],
+          "remapped_labels": {}
+        },
+        "citations": [
+          {
+            "label": "C1",
+            "doc_key": "doe-compressed-air-sourcebook",
+            "page_start": 10,
+            "page_end": 10
+          }
+        ],
+        "citation_matches_expected": true,
+        "expected_point_coverage": {
+          "matched": 3,
+          "total": 3
+        },
+        "forbidden_hits": [],
+        "timings_ms": {
+          "retrieval": 125.19,
+          "embedding": 107.17,
+          "llm": 2639.1,
+          "total": 2764.6
+        }
+      },
+      {
+        "id": "Q23",
+        "category": "principle",
+        "answerable": true,
+        "must_refuse": false,
+        "status": "answered",
+        "llm_status": "ok",
+        "citation_validation": {
+          "valid": true,
+          "unknown_labels": [],
+          "insufficient_evidence": false,
+          "quote_supported": "all",
+          "unverified_labels": [],
+          "remapped_labels": {}
+        },
+        "citations": [
+          {
+            "label": "C1",
+            "doc_key": "doe-compressed-air-sourcebook",
+            "page_start": 50,
+            "page_end": 50
+          }
+        ],
+        "citation_matches_expected": false,
+        "expected_point_coverage": {
+          "matched": 0,
+          "total": 3
+        },
+        "forbidden_hits": [],
+        "timings_ms": {
+          "retrieval": 129.75,
+          "embedding": 113.88,
+          "llm": 2175.34,
+          "total": 2305.38
+        }
+      },
+      {
+        "id": "Q24",
+        "category": "principle",
+        "answerable": true,
+        "must_refuse": false,
+        "status": "answered",
+        "llm_status": "ok",
+        "citation_validation": {
+          "valid": true,
+          "unknown_labels": [],
+          "insufficient_evidence": false,
+          "quote_supported": "not_provided",
+          "unverified_labels": [],
+          "remapped_labels": {}
+        },
+        "citations": [
+          {
+            "label": "C4",
+            "doc_key": "doe-compressed-air-sourcebook",
+            "page_start": 12,
+            "page_end": 12
+          }
+        ],
+        "citation_matches_expected": true,
+        "expected_point_coverage": {
+          "matched": 4,
+          "total": 4
+        },
+        "forbidden_hits": [],
+        "timings_ms": {
+          "retrieval": 132.96,
+          "embedding": 118.31,
+          "llm": 2876.01,
+          "total": 3009.23
+        }
+      },
+      {
+        "id": "Q25",
+        "category": "principle",
+        "answerable": true,
+        "must_refuse": false,
+        "status": "answered",
+        "llm_status": "ok",
+        "citation_validation": {
+          "valid": true,
+          "unknown_labels": [],
+          "insufficient_evidence": false,
+          "quote_supported": "all",
+          "unverified_labels": [],
+          "remapped_labels": {}
+        },
+        "citations": [
+          {
+            "label": "C2",
+            "doc_key": "doe-compressed-air-sourcebook",
+            "page_start": 13,
+            "page_end": 14
+          }
+        ],
+        "citation_matches_expected": true,
+        "expected_point_coverage": {
+          "matched": 4,
+          "total": 4
+        },
+        "forbidden_hits": [],
+        "timings_ms": {
+          "retrieval": 130.45,
+          "embedding": 114.9,
+          "llm": 2675.85,
+          "total": 2806.57
+        }
+      },
+      {
+        "id": "Q26",
+        "category": "principle",
+        "answerable": true,
+        "must_refuse": false,
+        "status": "answered",
+        "llm_status": "ok",
+        "citation_validation": {
+          "valid": true,
+          "unknown_labels": [],
+          "insufficient_evidence": false,
+          "quote_supported": "all",
+          "unverified_labels": [],
+          "remapped_labels": {}
+        },
+        "citations": [
+          {
+            "label": "C1",
+            "doc_key": "doe-compressed-air-sourcebook",
+            "page_start": 19,
+            "page_end": 19
+          }
+        ],
+        "citation_matches_expected": true,
+        "expected_point_coverage": {
+          "matched": 3,
+          "total": 3
+        },
+        "forbidden_hits": [],
+        "timings_ms": {
+          "retrieval": 131.4,
+          "embedding": 113.52,
+          "llm": 3480.89,
+          "total": 3612.61
+        }
+      },
+      {
+        "id": "Q27",
+        "category": "principle",
+        "answerable": true,
+        "must_refuse": false,
+        "status": "answered",
+        "llm_status": "ok",
+        "citation_validation": {
+          "valid": true,
+          "unknown_labels": [],
+          "insufficient_evidence": false,
+          "quote_supported": "all",
+          "unverified_labels": [],
+          "remapped_labels": {}
+        },
+        "citations": [
+          {
+            "label": "C1",
+            "doc_key": "doe-compressed-air-sourcebook",
+            "page_start": 44,
+            "page_end": 44
+          },
+          {
+            "label": "C4",
+            "doc_key": "doe-tip-sheet-8-stabilizing-pressure",
+            "page_start": 2,
+            "page_end": 2
+          }
+        ],
+        "citation_matches_expected": false,
+        "expected_point_coverage": {
+          "matched": 3,
+          "total": 3
+        },
+        "forbidden_hits": [],
+        "timings_ms": {
+          "retrieval": 123.3,
+          "embedding": 107.68,
+          "llm": 3292.29,
+          "total": 3415.9
+        }
+      },
+      {
+        "id": "Q28",
+        "category": "principle",
+        "answerable": true,
+        "must_refuse": false,
+        "status": "answered",
+        "llm_status": "ok",
+        "citation_validation": {
+          "valid": true,
+          "unknown_labels": [],
+          "insufficient_evidence": false,
+          "quote_supported": "all",
+          "unverified_labels": [],
+          "remapped_labels": {}
+        },
+        "citations": [
+          {
+            "label": "C1",
+            "doc_key": "doe-compressed-air-sourcebook",
+            "page_start": 53,
+            "page_end": 53
+          }
+        ],
+        "citation_matches_expected": false,
+        "expected_point_coverage": {
+          "matched": 3,
+          "total": 3
+        },
+        "forbidden_hits": [],
+        "timings_ms": {
+          "retrieval": 123.01,
+          "embedding": 106.19,
+          "llm": 1896.65,
+          "total": 2019.98
+        }
+      },
+      {
+        "id": "Q29",
+        "category": "principle",
+        "answerable": true,
+        "must_refuse": false,
+        "status": "answered",
+        "llm_status": "ok",
+        "citation_validation": {
+          "valid": true,
+          "unknown_labels": [],
+          "insufficient_evidence": false,
+          "quote_supported": "partial",
+          "unverified_labels": [
+            "C1"
+          ],
+          "remapped_labels": {}
+        },
+        "citations": [
+          {
+            "label": "C2",
+            "doc_key": "doe-compressed-air-sourcebook",
+            "page_start": 34,
+            "page_end": 34
+          }
+        ],
+        "citation_matches_expected": true,
+        "expected_point_coverage": {
+          "matched": 1,
+          "total": 1
+        },
+        "forbidden_hits": [],
+        "timings_ms": {
+          "retrieval": 122.2,
+          "embedding": 107.56,
+          "llm": 3237.22,
+          "total": 3359.78
+        }
+      },
+      {
+        "id": "Q30",
+        "category": "principle",
+        "answerable": true,
+        "must_refuse": false,
+        "status": "answered",
+        "llm_status": "ok",
+        "citation_validation": {
+          "valid": true,
+          "unknown_labels": [],
+          "insufficient_evidence": false,
+          "quote_supported": "all",
+          "unverified_labels": [],
+          "remapped_labels": {}
+        },
+        "citations": [
+          {
+            "label": "C1",
+            "doc_key": "doe-tip-sheet-3-minimize-leaks",
+            "page_start": 1,
+            "page_end": 1
+          },
+          {
+            "label": "C2",
+            "doc_key": "doe-compressed-air-sourcebook",
+            "page_start": 33,
+            "page_end": 33
+          }
+        ],
+        "citation_matches_expected": true,
+        "expected_point_coverage": {
+          "matched": 4,
+          "total": 4
+        },
+        "forbidden_hits": [],
+        "timings_ms": {
+          "retrieval": 123.82,
+          "embedding": 108.75,
+          "llm": 4279.99,
+          "total": 4404.2
+        }
+      },
+      {
+        "id": "Q31",
+        "category": "principle",
+        "answerable": true,
+        "must_refuse": false,
+        "status": "answered",
+        "llm_status": "ok",
+        "citation_validation": {
+          "valid": true,
+          "unknown_labels": [],
+          "insufficient_evidence": false,
+          "quote_supported": "all",
+          "unverified_labels": [],
+          "remapped_labels": {}
+        },
+        "citations": [
+          {
+            "label": "C5",
+            "doc_key": "doe-tip-sheet-6-preventive-maintenance",
+            "page_start": 2,
+            "page_end": 2
+          }
+        ],
+        "citation_matches_expected": true,
+        "expected_point_coverage": {
+          "matched": 4,
+          "total": 4
+        },
+        "forbidden_hits": [],
+        "timings_ms": {
+          "retrieval": 133.28,
+          "embedding": 113.83,
+          "llm": 2381.02,
+          "total": 2514.55
+        }
+      },
+      {
+        "id": "Q32",
+        "category": "principle",
+        "answerable": true,
+        "must_refuse": false,
+        "status": "answered",
+        "llm_status": "ok",
+        "citation_validation": {
+          "valid": true,
+          "unknown_labels": [],
+          "insufficient_evidence": false,
+          "quote_supported": "all",
+          "unverified_labels": [],
+          "remapped_labels": {}
+        },
+        "citations": [
+          {
+            "label": "C2",
+            "doc_key": "doe-tip-sheet-8-stabilizing-pressure",
+            "page_start": 1,
+            "page_end": 1
+          }
+        ],
+        "citation_matches_expected": true,
+        "expected_point_coverage": {
+          "matched": 3,
+          "total": 3
+        },
+        "forbidden_hits": [],
+        "timings_ms": {
+          "retrieval": 122.34,
+          "embedding": 108.03,
+          "llm": 1911.04,
+          "total": 2033.62
+        }
+      },
+      {
+        "id": "Q33",
+        "category": "identifier",
+        "answerable": true,
+        "must_refuse": false,
+        "status": "answered",
+        "llm_status": "ok",
+        "citation_validation": {
+          "valid": true,
+          "unknown_labels": [],
+          "insufficient_evidence": false,
+          "quote_supported": "not_provided",
+          "unverified_labels": [],
+          "remapped_labels": {}
+        },
+        "citations": [
+          {
+            "label": "C1",
+            "doc_key": "doe-compressed-air-sourcebook",
+            "page_start": 104,
+            "page_end": 104
+          }
+        ],
+        "citation_matches_expected": true,
+        "expected_point_coverage": {
+          "matched": 2,
+          "total": 3
+        },
+        "forbidden_hits": [],
+        "timings_ms": {
+          "retrieval": 121.14,
+          "embedding": 108.84,
+          "llm": 2210.75,
+          "total": 2332.2
+        }
+      },
+      {
+        "id": "Q34",
+        "category": "identifier",
+        "answerable": true,
+        "must_refuse": false,
+        "status": "answered",
+        "llm_status": "ok",
+        "citation_validation": {
+          "valid": true,
+          "unknown_labels": [],
+          "insufficient_evidence": false,
+          "quote_supported": "all",
+          "unverified_labels": [],
+          "remapped_labels": {}
+        },
+        "citations": [
+          {
+            "label": "C2",
+            "doc_key": "doe-compressed-air-sourcebook",
+            "page_start": 92,
+            "page_end": 92
+          },
+          {
+            "label": "C4",
+            "doc_key": "doe-compressed-air-sourcebook",
+            "page_start": 94,
+            "page_end": 95
+          }
+        ],
+        "citation_matches_expected": true,
+        "expected_point_coverage": {
+          "matched": 2,
+          "total": 2
+        },
+        "forbidden_hits": [],
+        "timings_ms": {
+          "retrieval": 133.18,
+          "embedding": 116.31,
+          "llm": 3576.78,
+          "total": 3710.21
+        }
+      },
+      {
+        "id": "Q35",
+        "category": "identifier",
+        "answerable": true,
+        "must_refuse": false,
+        "status": "answered",
+        "llm_status": "ok",
+        "citation_validation": {
+          "valid": true,
+          "unknown_labels": [],
+          "insufficient_evidence": false,
+          "quote_supported": "all",
+          "unverified_labels": [],
+          "remapped_labels": {}
+        },
+        "citations": [
+          {
+            "label": "C1",
+            "doc_key": "doe-compressed-air-sourcebook",
+            "page_start": 26,
+            "page_end": 27
+          }
+        ],
+        "citation_matches_expected": true,
+        "expected_point_coverage": {
+          "matched": 1,
+          "total": 1
+        },
+        "forbidden_hits": [],
+        "timings_ms": {
+          "retrieval": 125.57,
+          "embedding": 110.41,
+          "llm": 1949.21,
+          "total": 2075.1
+        }
+      },
+      {
+        "id": "Q36",
+        "category": "identifier",
+        "answerable": true,
+        "must_refuse": false,
+        "status": "answered",
+        "llm_status": "ok",
+        "citation_validation": {
+          "valid": true,
+          "unknown_labels": [],
+          "insufficient_evidence": false,
+          "quote_supported": "all",
+          "unverified_labels": [],
+          "remapped_labels": {}
+        },
+        "citations": [
+          {
+            "label": "C1",
+            "doc_key": "doe-compressed-air-sourcebook",
+            "page_start": 114,
+            "page_end": 114
+          }
+        ],
+        "citation_matches_expected": true,
+        "expected_point_coverage": {
+          "matched": 2,
+          "total": 2
+        },
+        "forbidden_hits": [],
+        "timings_ms": {
+          "retrieval": 131.55,
+          "embedding": 118.63,
+          "llm": 1582.34,
+          "total": 1714.09
+        }
+      },
+      {
+        "id": "Q37",
+        "category": "identifier",
+        "answerable": true,
+        "must_refuse": false,
+        "status": "answered",
+        "llm_status": "ok",
+        "citation_validation": {
+          "valid": true,
+          "unknown_labels": [],
+          "insufficient_evidence": false,
+          "quote_supported": "partial",
+          "unverified_labels": [
+            "C1"
+          ],
+          "remapped_labels": {}
+        },
+        "citations": [
+          {
+            "label": "C3",
+            "doc_key": "metropt-dataset-paper",
+            "page_start": 2,
+            "page_end": 2
+          }
+        ],
+        "citation_matches_expected": true,
+        "expected_point_coverage": {
+          "matched": 2,
+          "total": 3
+        },
+        "forbidden_hits": [],
+        "timings_ms": {
+          "retrieval": 128.47,
+          "embedding": 114.46,
+          "llm": 3394.56,
+          "total": 3523.44
+        }
+      },
+      {
+        "id": "Q38",
+        "category": "multi_doc",
+        "answerable": true,
+        "must_refuse": false,
+        "status": "answered",
+        "llm_status": "ok",
+        "citation_validation": {
+          "valid": true,
+          "unknown_labels": [],
+          "insufficient_evidence": false,
+          "quote_supported": "all",
+          "unverified_labels": [],
+          "remapped_labels": {}
+        },
+        "citations": [
+          {
+            "label": "C1",
+            "doc_key": "metropt3-data-description",
+            "page_start": 2,
+            "page_end": 2
+          }
+        ],
+        "citation_matches_expected": false,
+        "expected_point_coverage": {
+          "matched": 3,
+          "total": 3
+        },
+        "forbidden_hits": [],
+        "timings_ms": {
+          "retrieval": 141.82,
+          "embedding": 120.5,
+          "llm": 2976.93,
+          "total": 3118.99
+        }
+      },
+      {
+        "id": "Q39",
+        "category": "multi_doc",
+        "answerable": true,
+        "must_refuse": false,
+        "status": "answered",
+        "llm_status": "ok",
+        "citation_validation": {
+          "valid": true,
+          "unknown_labels": [],
+          "insufficient_evidence": false,
+          "quote_supported": "all",
+          "unverified_labels": [],
+          "remapped_labels": {}
+        },
+        "citations": [
+          {
+            "label": "C3",
+            "doc_key": "metropt-dataset-paper",
+            "page_start": 5,
+            "page_end": 5
+          },
+          {
+            "label": "C4",
+            "doc_key": "metropt-dataset-paper",
+            "page_start": 5,
+            "page_end": 5
+          }
+        ],
+        "citation_matches_expected": false,
+        "expected_point_coverage": {
+          "matched": 2,
+          "total": 2
+        },
+        "forbidden_hits": [],
+        "timings_ms": {
+          "retrieval": 141.73,
+          "embedding": 119.54,
+          "llm": 2543.41,
+          "total": 2685.42
+        }
+      },
+      {
+        "id": "Q40",
+        "category": "multi_doc",
+        "answerable": true,
+        "must_refuse": false,
+        "status": "answered",
+        "llm_status": "ok",
+        "citation_validation": {
+          "valid": true,
+          "unknown_labels": [],
+          "insufficient_evidence": false,
+          "quote_supported": "not_provided",
+          "unverified_labels": [],
+          "remapped_labels": {}
+        },
+        "citations": [
+          {
+            "label": "C2",
+            "doc_key": "metropt3-data-description",
+            "page_start": 2,
+            "page_end": 3
+          },
+          {
+            "label": "C4",
+            "doc_key": "doe-tip-sheet-8-stabilizing-pressure",
+            "page_start": 1,
+            "page_end": 1
+          }
+        ],
+        "citation_matches_expected": true,
+        "expected_point_coverage": {
+          "matched": 1,
+          "total": 4
+        },
+        "forbidden_hits": [],
+        "timings_ms": {
+          "retrieval": 142.96,
+          "embedding": 118.93,
+          "llm": 1680.18,
+          "total": 1823.43
+        }
+      },
+      {
+        "id": "Q41",
+        "category": "multi_doc",
+        "answerable": true,
+        "must_refuse": false,
+        "status": "insufficient_evidence",
+        "llm_status": "ok",
+        "citation_validation": {
+          "valid": true,
+          "unknown_labels": [],
+          "insufficient_evidence": true,
+          "quote_supported": "not_provided",
+          "unverified_labels": [],
+          "remapped_labels": {}
+        },
+        "citations": [
+          {
+            "label": "C1",
+            "doc_key": "metropt3-data-description",
+            "page_start": 1,
+            "page_end": 1
+          },
+          {
+            "label": "C2",
+            "doc_key": "metropt-dataset-paper",
+            "page_start": 1,
+            "page_end": 1
+          }
+        ],
+        "citation_matches_expected": false,
+        "expected_point_coverage": {
+          "matched": 1,
+          "total": 2
+        },
+        "forbidden_hits": [],
+        "timings_ms": {
+          "retrieval": 142.06,
+          "embedding": 117.95,
+          "llm": 1198.9,
+          "total": 1341.22
+        }
+      },
+      {
+        "id": "Q42",
+        "category": "unknown",
+        "answerable": false,
+        "must_refuse": true,
+        "status": "insufficient_evidence",
+        "llm_status": "ok",
+        "citation_validation": {
+          "valid": true,
+          "unknown_labels": [],
+          "insufficient_evidence": true,
+          "quote_supported": "not_provided",
+          "unverified_labels": [],
+          "remapped_labels": {}
+        },
+        "citations": [
+          {
+            "label": "C1",
+            "doc_key": "metropt3-data-description",
+            "page_start": 1,
+            "page_end": 1
+          },
+          {
+            "label": "C2",
+            "doc_key": "metropt3-data-description",
+            "page_start": 1,
+            "page_end": 2
+          },
+          {
+            "label": "C3",
+            "doc_key": "doe-compressed-air-sourcebook",
+            "page_start": 94,
+            "page_end": 94
+          },
+          {
+            "label": "C4",
+            "doc_key": "doe-compressed-air-sourcebook",
+            "page_start": 12,
+            "page_end": 13
+          },
+          {
+            "label": "C5",
+            "doc_key": "metropt-dataset-paper",
+            "page_start": 1,
+            "page_end": 1
+          }
+        ],
+        "citation_matches_expected": false,
+        "expected_point_coverage": {
+          "matched": 0,
+          "total": 0
+        },
+        "forbidden_hits": [],
+        "timings_ms": {
+          "retrieval": 133.07,
+          "embedding": 116.1,
+          "llm": 1457.83,
+          "total": 1591.16
+        }
+      },
+      {
+        "id": "Q43",
+        "category": "unknown",
+        "answerable": false,
+        "must_refuse": true,
+        "status": "insufficient_evidence",
+        "llm_status": "ok",
+        "citation_validation": {
+          "valid": true,
+          "unknown_labels": [],
+          "insufficient_evidence": true,
+          "quote_supported": "not_provided",
+          "unverified_labels": [],
+          "remapped_labels": {}
+        },
+        "citations": [
+          {
+            "label": "C1",
+            "doc_key": "metropt3-data-description",
+            "page_start": 1,
+            "page_end": 1
+          },
+          {
+            "label": "C4",
+            "doc_key": "metropt3-data-description",
+            "page_start": 2,
+            "page_end": 2
+          }
+        ],
+        "citation_matches_expected": false,
+        "expected_point_coverage": {
+          "matched": 0,
+          "total": 0
+        },
+        "forbidden_hits": [],
+        "timings_ms": {
+          "retrieval": 135.99,
+          "embedding": 118.42,
+          "llm": 1272.07,
+          "total": 1408.32
+        }
+      },
+      {
+        "id": "Q44",
+        "category": "unknown",
+        "answerable": false,
+        "must_refuse": true,
+        "status": "insufficient_evidence",
+        "llm_status": "ok",
+        "citation_validation": {
+          "valid": true,
+          "unknown_labels": [],
+          "insufficient_evidence": true,
+          "quote_supported": "not_provided",
+          "unverified_labels": [],
+          "remapped_labels": {}
+        },
+        "citations": [
+          {
+            "label": "C1",
+            "doc_key": "metropt3-data-description",
+            "page_start": 1,
+            "page_end": 1
+          },
+          {
+            "label": "C2",
+            "doc_key": "doe-compressed-air-sourcebook",
+            "page_start": 60,
+            "page_end": 60
+          },
+          {
+            "label": "C3",
+            "doc_key": "doe-compressed-air-sourcebook",
+            "page_start": 60,
+            "page_end": 60
+          },
+          {
+            "label": "C4",
+            "doc_key": "doe-compressed-air-sourcebook",
+            "page_start": 59,
+            "page_end": 60
+          }
+        ],
+        "citation_matches_expected": false,
+        "expected_point_coverage": {
+          "matched": 0,
+          "total": 0
+        },
+        "forbidden_hits": [],
+        "timings_ms": {
+          "retrieval": 134.89,
+          "embedding": 117.02,
+          "llm": 1497.25,
+          "total": 1632.32
+        }
+      },
+      {
+        "id": "Q45",
+        "category": "unknown",
+        "answerable": false,
+        "must_refuse": true,
+        "status": "insufficient_evidence",
+        "llm_status": "ok",
+        "citation_validation": {
+          "valid": true,
+          "unknown_labels": [],
+          "insufficient_evidence": true,
+          "quote_supported": "not_provided",
+          "unverified_labels": [],
+          "remapped_labels": {}
+        },
+        "citations": [
+          {
+            "label": "C2",
+            "doc_key": "metropt3-data-description",
+            "page_start": 3,
+            "page_end": 3
+          },
+          {
+            "label": "C3",
+            "doc_key": "metropt3-data-description",
+            "page_start": 3,
+            "page_end": 3
+          }
+        ],
+        "citation_matches_expected": false,
+        "expected_point_coverage": {
+          "matched": 0,
+          "total": 0
+        },
+        "forbidden_hits": [],
+        "timings_ms": {
+          "retrieval": 135.82,
+          "embedding": 113.13,
+          "llm": 1659.06,
+          "total": 1795.1
+        }
+      },
+      {
+        "id": "Q46",
+        "category": "unknown",
+        "answerable": false,
+        "must_refuse": true,
+        "status": "insufficient_evidence",
+        "llm_status": "ok",
+        "citation_validation": {
+          "valid": true,
+          "unknown_labels": [],
+          "insufficient_evidence": true,
+          "quote_supported": "not_provided",
+          "unverified_labels": [],
+          "remapped_labels": {}
+        },
+        "citations": [
+          {
+            "label": "C1",
+            "doc_key": "metropt-dataset-paper",
+            "page_start": 4,
+            "page_end": 5
+          },
+          {
+            "label": "C2",
+            "doc_key": "metropt-dataset-paper",
+            "page_start": 5,
+            "page_end": 5
+          },
+          {
+            "label": "C3",
+            "doc_key": "metropt-dataset-paper",
+            "page_start": 2,
+            "page_end": 2
+          },
+          {
+            "label": "C5",
+            "doc_key": "metropt-dataset-paper",
+            "page_start": 5,
+            "page_end": 5
+          }
+        ],
+        "citation_matches_expected": false,
+        "expected_point_coverage": {
+          "matched": 0,
+          "total": 0
+        },
+        "forbidden_hits": [],
+        "timings_ms": {
+          "retrieval": 127.85,
+          "embedding": 113.58,
+          "llm": 2911.82,
+          "total": 3039.97
+        }
+      },
+      {
+        "id": "Q47",
+        "category": "model_mismatch",
+        "answerable": false,
+        "must_refuse": true,
+        "status": "insufficient_evidence",
+        "llm_status": "skipped_ungrounded_identifier",
+        "citation_validation": {
+          "valid": true,
+          "unknown_labels": [],
+          "insufficient_evidence": true
+        },
+        "citations": [],
+        "citation_matches_expected": false,
+        "expected_point_coverage": {
+          "matched": 0,
+          "total": 0
+        },
+        "forbidden_hits": [],
+        "timings_ms": {
+          "retrieval": 138.28,
+          "embedding": 119.25,
+          "total": 138.33
+        }
+      },
+      {
+        "id": "Q48",
+        "category": "model_mismatch",
+        "answerable": false,
+        "must_refuse": true,
+        "status": "insufficient_evidence",
+        "llm_status": "skipped_ungrounded_identifier",
+        "citation_validation": {
+          "valid": true,
+          "unknown_labels": [],
+          "insufficient_evidence": true
+        },
+        "citations": [],
+        "citation_matches_expected": false,
+        "expected_point_coverage": {
+          "matched": 0,
+          "total": 0
+        },
+        "forbidden_hits": [],
+        "timings_ms": {
+          "retrieval": 138.85,
+          "embedding": 118.31,
+          "total": 138.89
+        }
+      },
+      {
+        "id": "Q49",
+        "category": "model_mismatch",
+        "answerable": false,
+        "must_refuse": true,
+        "status": "insufficient_evidence",
+        "llm_status": "skipped_ungrounded_identifier",
+        "citation_validation": {
+          "valid": true,
+          "unknown_labels": [],
+          "insufficient_evidence": true
+        },
+        "citations": [],
+        "citation_matches_expected": false,
+        "expected_point_coverage": {
+          "matched": 0,
+          "total": 0
+        },
+        "forbidden_hits": [],
+        "timings_ms": {
+          "retrieval": 133.23,
+          "embedding": 117.32,
+          "total": 133.27
+        }
+      },
+      {
+        "id": "Q50",
+        "category": "irrelevant",
+        "answerable": false,
+        "must_refuse": true,
+        "status": "insufficient_evidence",
+        "llm_status": "skipped_out_of_scope",
+        "citation_validation": {
+          "valid": true,
+          "unknown_labels": [],
+          "insufficient_evidence": true
+        },
+        "citations": [],
+        "citation_matches_expected": false,
+        "expected_point_coverage": {
+          "matched": 0,
+          "total": 0
+        },
+        "forbidden_hits": [],
+        "timings_ms": {
+          "total": 0.01
+        }
+      },
+      {
+        "id": "Q51",
+        "category": "irrelevant",
+        "answerable": false,
+        "must_refuse": true,
+        "status": "insufficient_evidence",
+        "llm_status": "skipped_out_of_scope",
+        "citation_validation": {
+          "valid": true,
+          "unknown_labels": [],
+          "insufficient_evidence": true
+        },
+        "citations": [],
+        "citation_matches_expected": false,
+        "expected_point_coverage": {
+          "matched": 0,
+          "total": 0
+        },
+        "forbidden_hits": [],
+        "timings_ms": {
+          "total": 0.0
+        }
+      },
+      {
+        "id": "Q52",
+        "category": "irrelevant",
+        "answerable": false,
+        "must_refuse": true,
+        "status": "insufficient_evidence",
+        "llm_status": "skipped_out_of_scope",
+        "citation_validation": {
+          "valid": true,
+          "unknown_labels": [],
+          "insufficient_evidence": true
+        },
+        "citations": [],
+        "citation_matches_expected": false,
+        "expected_point_coverage": {
+          "matched": 0,
+          "total": 0
+        },
+        "forbidden_hits": [],
+        "timings_ms": {
+          "total": 0.0
+        }
+      }
+    ]
+  },
+  "total_elapsed_ms": 26934.19
+}

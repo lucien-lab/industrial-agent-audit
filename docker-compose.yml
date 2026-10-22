@@ -1,0 +1,32 @@
+# Phase 1B：工业数据底座（PostgreSQL 17 + pgvector）
+# 只包含当前阶段需要的基础设施，不引入 Redis / 队列 / 向量库外挂。
+# 凭据一律来自 .env（已被 .gitignore 忽略），本文件不含任何真实密码。
+services:
+  db:
+    image: pgvector/pgvector:pg17
+    container_name: iaa-postgres
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:?POSTGRES_DB 未在 .env 中配置}
+      POSTGRES_USER: ${POSTGRES_USER:?POSTGRES_USER 未在 .env 中配置}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?POSTGRES_PASSWORD 未在 .env 中配置}
+      # 源数据为未知时区的 timestamp without time zone，集群时区固定 UTC 仅作为
+      # 默认显示设置，不用于把源时间解释成 UTC（见 docs/database_design.md）。
+      TZ: UTC
+      PGTZ: UTC
+    ports:
+      - "127.0.0.1:${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./deploy/initdb:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+      start_period: 10s
+    restart: unless-stopped
+    shm_size: 256mb
+
+volumes:
+  pgdata:
+    name: iaa-pgdata

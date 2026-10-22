@@ -1,0 +1,1168 @@
+{
+  "version": "rag-eval-v1",
+  "created_at": "2026-10-22",
+  "knowledge_index": {
+    "chunking_versions": [
+      "structural-v1",
+      "fixed-v1"
+    ],
+    "embedding_model": "bge-m3",
+    "embedding_version": "bge-m3-1024-v1",
+    "embedding_dim": 1024
+  },
+  "metric_definition": {
+    "relevance": "每条 expected 是一项“证据需求”：doc_key 相同且 Chunk 页码区间与 pages 中任一页有交集，即满足该需求；also_ok 列出同样可接受的其它文档/页码。",
+    "recall_at_5": "每题的 |已满足的证据需求| / |证据需求总数|，再对所有可回答题取宏平均（多文档题按需求分别计分）",
+    "hit_rate_at_5": "Top-5 中至少命中一条预期证据的题目占比（可回答题）",
+    "mrr_at_10": "Top-10 中第一条相关结果的倒数排名，可回答题取宏平均",
+    "precision_at_5": "Top-5 中相关结果数 / min(5, 返回数)，可回答题取宏平均",
+    "note": "预期证据由人工依据原文页码标注（见每题的 basis 字段），不是由模型生成。页码为 PDF 物理页码（从 1 开始）。"
+  },
+  "generation_rubric": {
+    "evidence_supported": "回答中的事实性断言都能在上文列出的引用 Chunk 中找到依据",
+    "citation_correct": "引用标签对应的文档与页码确实包含该断言所需的信息",
+    "unsupported_claims": "出现了引用 Chunk 中没有的数字、型号、阈值或故障结论",
+    "refusal_correct": "对 must_refuse=true 的问题，明确说明无法确认且未给出具体参数/结论",
+    "labels": [
+      "yes",
+      "partial",
+      "no"
+    ]
+  },
+  "questions": [
+    {
+      "id": "Q01",
+      "category": "sensor_field",
+      "lang": "zh",
+      "question": "MetroPT-3 数据说明中 TP2 测量的是什么？",
+      "answerable": true,
+      "expected": [
+        {
+          "doc_key": "metropt3-data-description",
+          "pages": [
+            2
+          ],
+          "basis": "原文第 2 页：'1. TP2 (bar) – the measure of the pressure on the compressor.'"
+        }
+      ],
+      "expected_answer_points": [
+        "压缩机的压力|pressure on the compressor|压缩机上的压力"
+      ],
+      "must_refuse": false,
+      "forbidden_terms": []
+    },
+    {
+      "id": "Q02",
+      "category": "sensor_field",
+      "lang": "zh",
+      "question": "TP3 这个传感器测的是什么压力？",
+      "answerable": true,
+      "expected": [
+        {
+          "doc_key": "metropt3-data-description",
+          "pages": [
+            2
+          ],
+          "basis": "原文第 2 页：'2. TP3 (bar) – the measure of the pressure generated at the pneumatic panel.'"
+        }
+      ],
+      "expected_answer_points": [
+        "气动面板|pneumatic panel"
+      ],
+      "must_refuse": false,
+      "forbidden_terms": []
+    },
+    {
+      "id": "Q03",
+      "category": "sensor_field",
+      "lang": "zh",
+      "question": "H1 传感器在数据说明里是什么含义？",
+      "answerable": true,
+      "expected": [
+        {
+          "doc_key": "metropt3-data-description",
+          "pages": [
+            2
+          ],
+          "basis": "原文第 2 页：'3. H1 (bar) – ... pressure drop when the discharge of the cyclonic separator filter occurs.'"
+        }
+      ],
+      "expected_answer_points": [
+        "旋风分离器|cyclonic separator",
+        "压降|压力降|pressure drop"
+      ],
+      "must_refuse": false,
+      "forbidden_terms": []
+    },
+    {
+      "id": "Q04",
+      "category": "sensor_field",
+      "lang": "zh",
+      "question": "DV pressure 读数为零代表压缩机处于什么状态？",
+      "answerable": true,
+      "expected": [
+        {
+          "doc_key": "metropt3-data-description",
+          "pages": [
+            2
+          ],
+          "basis": "原文第 2 页：'a zero reading indicates that the compressor is operating under load.'"
+        }
+      ],
+      "expected_answer_points": [
+        "带载|负载|加载|under load|工作状态"
+      ],
+      "must_refuse": false,
+      "forbidden_terms": []
+    },
+    {
+      "id": "Q05",
+      "category": "sensor_field",
+      "lang": "zh",
+      "question": "Reservoirs 压力应该与哪个压力接近？",
+      "answerable": true,
+      "expected": [
+        {
+          "doc_key": "metropt3-data-description",
+          "pages": [
+            2
+          ],
+          "basis": "原文第 2 页：'Reservoirs (bar) – ... downstream pressure of the reservoirs, which should be close to the pneumatic panel pressure (TP3).'"
+        }
+      ],
+      "expected_answer_points": [
+        "TP3|气动面板|pneumatic panel"
+      ],
+      "must_refuse": false,
+      "forbidden_terms": []
+    },
+    {
+      "id": "Q06",
+      "category": "sensor_field",
+      "lang": "zh",
+      "question": "电机电流 Motor Current 在 0A、4A、7A、9A 附近分别对应什么运行状态？",
+      "answerable": true,
+      "expected": [
+        {
+          "doc_key": "metropt3-data-description",
+          "pages": [
+            2
+          ],
+          "basis": "原文第 2 页：'values close to 0A - when it turns off, 4A - when working offloaded, 7A - when working under load, and 9A - when it starts working.'"
+        }
+      ],
+      "expected_answer_points": [
+        "关闭|停机|turns off|0A",
+        "卸载|offloaded|4A",
+        "带载|负载|under load|7A",
+        "启动|starts|9A"
+      ],
+      "must_refuse": false,
+      "forbidden_terms": []
+    },
+    {
+      "id": "Q07",
+      "category": "sensor_field",
+      "lang": "zh",
+      "question": "COMP 信号在什么情况下是有效的？",
+      "answerable": true,
+      "expected": [
+        {
+          "doc_key": "metropt3-data-description",
+          "pages": [
+            2
+          ],
+          "basis": "原文第 2 页：'COMP - the electrical signal of the air intake valve ... active when there is no air intake ... compressor is either turned off or operating in an offloaded state.'"
+        }
+      ],
+      "expected_answer_points": [
+        "没有(空气|进气)|无空气|no air intake|no admission|进气阀",
+        "关闭|停机|卸载|offloaded"
+      ],
+      "must_refuse": false,
+      "forbidden_terms": []
+    },
+    {
+      "id": "Q08",
+      "category": "sensor_field",
+      "lang": "zh",
+      "question": "TOWERS 信号如何表示两个干燥塔的工作状态？",
+      "answerable": true,
+      "expected": [
+        {
+          "doc_key": "metropt3-data-description",
+          "pages": [
+            3
+          ],
+          "basis": "原文第 3 页：'when not active ... tower one is functioning; when active ... tower two is in operation.'"
+        }
+      ],
+      "expected_answer_points": [
+        "塔一|tower one|不激活|not active",
+        "塔二|tower two|激活|active"
+      ],
+      "must_refuse": false,
+      "forbidden_terms": []
+    },
+    {
+      "id": "Q09",
+      "category": "sensor_field",
+      "lang": "zh",
+      "question": "MPG 在压力低于多少时启动压缩机？LPS 在压力低于多少时动作？",
+      "answerable": true,
+      "expected": [
+        {
+          "doc_key": "metropt3-data-description",
+          "pages": [
+            3
+          ],
+          "basis": "原文第 3 页：MPG 在 APU 压力低于 8.2 bar 时启动；LPS 在压力低于 7 bar 时激活。"
+        }
+      ],
+      "expected_answer_points": [
+        "8.2",
+        "7"
+      ],
+      "must_refuse": false,
+      "forbidden_terms": []
+    },
+    {
+      "id": "Q10",
+      "category": "sensor_field",
+      "lang": "zh",
+      "question": "Oil Level 信号为 1 表示油位处于什么状态？",
+      "answerable": true,
+      "expected": [
+        {
+          "doc_key": "metropt3-data-description",
+          "pages": [
+            3
+          ],
+          "basis": "原文第 3 页：'it is active when the oil is below the expected values.'"
+        }
+      ],
+      "expected_answer_points": [
+        "低于|below",
+        "油位|oil level|oil"
+      ],
+      "must_refuse": false,
+      "forbidden_terms": []
+    },
+    {
+      "id": "Q11",
+      "category": "sensor_field",
+      "lang": "zh",
+      "question": "Caudal Impulse 记录的是什么？",
+      "answerable": true,
+      "expected": [
+        {
+          "doc_key": "metropt3-data-description",
+          "pages": [
+            3
+          ],
+          "basis": "原文第 3 页：'counts the pulse outputs generated by the absolute amount of air flowing from the APU to the reservoirs.'"
+        }
+      ],
+      "expected_answer_points": [
+        "脉冲|pulse",
+        "流量|air flowing|气流|空气"
+      ],
+      "must_refuse": false,
+      "forbidden_terms": []
+    },
+    {
+      "id": "Q12",
+      "category": "sensor_field",
+      "lang": "zh",
+      "question": "数据说明里写了多少路模拟量传感器和多少路数字量传感器？",
+      "answerable": true,
+      "expected": [
+        {
+          "doc_key": "metropt3-data-description",
+          "pages": [
+            2
+          ],
+          "basis": "原文第 2 页：'15 features from 7 analogue (1-7) and 8 digital (8-15) sensors'"
+        }
+      ],
+      "expected_answer_points": [
+        "7",
+        "8"
+      ],
+      "must_refuse": false,
+      "forbidden_terms": []
+    },
+    {
+      "id": "Q13",
+      "category": "paper",
+      "lang": "zh",
+      "question": "论文说 APU 安装在哪里？它失效会带来什么后果？",
+      "answerable": true,
+      "expected": [
+        {
+          "doc_key": "metropt-dataset-paper",
+          "pages": [
+            1
+          ],
+          "basis": "论文第 1 页：'The Air Production Unit (APU) installed on the roof of Metro vehicles ... absence of redundancy causes its failure to result in the immediate removal of the train for repair.'"
+        }
+      ],
+      "expected_answer_points": [
+        "车顶|roof",
+        "列车|车辆|train",
+        "维修|停运|removal|removed"
+      ],
+      "must_refuse": false,
+      "forbidden_terms": []
+    },
+    {
+      "id": "Q14",
+      "category": "paper",
+      "lang": "zh",
+      "question": "论文中数据的采集频率是多少？多久上传一次到远程服务器？",
+      "answerable": true,
+      "expected": [
+        {
+          "doc_key": "metropt-dataset-paper",
+          "pages": [
+            2
+          ],
+          "basis": "论文第 2 页：'The data acquisition rate is 1 Hz, and the information is sent to the remote server every five minutes using the GSM network.'"
+        }
+      ],
+      "expected_answer_points": [
+        "1 Hz|1Hz|1 赫兹",
+        "五分钟|5 分钟|five minutes"
+      ],
+      "must_refuse": false,
+      "forbidden_terms": []
+    },
+    {
+      "id": "Q15",
+      "category": "paper",
+      "lang": "zh",
+      "question": "论文中传感器选型依据的是哪两种分析？",
+      "answerable": true,
+      "expected": [
+        {
+          "doc_key": "metropt-dataset-paper",
+          "pages": [
+            2
+          ],
+          "basis": "论文第 2 页：'The selection of the sensors was based on an FMEA ... and FMECA ... developed by the maintenance teams of Metro of Porto.'"
+        }
+      ],
+      "expected_answer_points": [
+        "FMEA",
+        "FMECA"
+      ],
+      "must_refuse": false,
+      "forbidden_terms": []
+    },
+    {
+      "id": "Q16",
+      "category": "paper",
+      "lang": "zh",
+      "question": "论文的技术验证部分报告了几次故障？分别是什么类型？",
+      "answerable": true,
+      "expected": [
+        {
+          "doc_key": "metropt-dataset-paper",
+          "pages": [
+            5
+          ],
+          "basis": "论文第 5 页 Table 2 与 Technical Validation：3 次 catastrophic failures，2 次 Air Leak、1 次 Oil Leak。"
+        }
+      ],
+      "expected_answer_points": [
+        "3|三",
+        "空气泄漏|air leak",
+        "漏油|oil leak"
+      ],
+      "must_refuse": false,
+      "forbidden_terms": []
+    },
+    {
+      "id": "Q17",
+      "category": "paper",
+      "lang": "zh",
+      "question": "Failure 2 的 Air Leak 是由什么引起的？",
+      "answerable": true,
+      "expected": [
+        {
+          "doc_key": "metropt-dataset-paper",
+          "pages": [
+            5
+          ],
+          "basis": "论文第 5 页：'Failure 2 - Air leak on air dryer ... malfunction of the pneumatic pilot valve that opens the drain pipes during the operation of the compressor.'"
+        }
+      ],
+      "expected_answer_points": [
+        "气动先导阀|pneumatic pilot valve",
+        "排水管|drain pipe|干燥器|dryer"
+      ],
+      "must_refuse": false,
+      "forbidden_terms": []
+    },
+    {
+      "id": "Q18",
+      "category": "paper",
+      "lang": "zh",
+      "question": "为什么 Failure 3 的漏油在发生时没有给司机任何告警信号？",
+      "answerable": true,
+      "expected": [
+        {
+          "doc_key": "metropt-dataset-paper",
+          "pages": [
+            5
+          ],
+          "basis": "论文第 5 页：'due to hardware design, there was not any signal system related to oil to warn the train driver.'"
+        }
+      ],
+      "expected_answer_points": [
+        "硬件设计|hardware design",
+        "没有|not any|无",
+        "信号|signal|告警"
+      ],
+      "must_refuse": false,
+      "forbidden_terms": []
+    },
+    {
+      "id": "Q19",
+      "category": "paper",
+      "lang": "zh",
+      "question": "论文提出的评估协议如何定义 True Positive 和 False Positive？",
+      "answerable": true,
+      "expected": [
+        {
+          "doc_key": "metropt-dataset-paper",
+          "pages": [
+            6
+          ],
+          "basis": "论文第 6 页 Evaluation protocol：TP = 预测故障区间与观测故障区间重叠；FP = 不重叠。"
+        }
+      ],
+      "expected_answer_points": [
+        "重叠|overlap",
+        "不(与|相)?重叠|没有重叠|does not overlap"
+      ],
+      "must_refuse": false,
+      "forbidden_terms": []
+    },
+    {
+      "id": "Q20",
+      "category": "paper",
+      "lang": "zh",
+      "question": "论文中公司要求至少提前多久检测到故障？",
+      "answerable": true,
+      "expected": [
+        {
+          "doc_key": "metropt-dataset-paper",
+          "pages": [
+            6
+          ],
+          "basis": "论文第 6 页：'detect the failure at least two hours before the train becomes non-operational'"
+        }
+      ],
+      "expected_answer_points": [
+        "两小时|2 小时|2 hours|two hours"
+      ],
+      "must_refuse": false,
+      "forbidden_terms": []
+    },
+    {
+      "id": "Q21",
+      "category": "principle",
+      "lang": "zh",
+      "question": "容积式压缩机和动力式压缩机的工作原理有什么区别？",
+      "answerable": true,
+      "expected": [
+        {
+          "doc_key": "doe-compressed-air-sourcebook",
+          "pages": [
+            10
+          ],
+          "basis": "手册第 10 页：positive-displacement 把定量气体封闭后机械减小体积；dynamic 通过高速叶轮把速度能转为压力能。"
+        }
+      ],
+      "expected_answer_points": [
+        "体积|volume",
+        "速度|velocity|动能",
+        "压力|pressure"
+      ],
+      "must_refuse": false,
+      "forbidden_terms": []
+    },
+    {
+      "id": "Q22",
+      "category": "principle",
+      "lang": "zh",
+      "question": "单作用往复式压缩机的典型排气压力范围是多少？",
+      "answerable": true,
+      "expected": [
+        {
+          "doc_key": "doe-compressed-air-sourcebook",
+          "pages": [
+            10
+          ],
+          "basis": "手册第 10 页：单级通常 25–125 psig，两级 125–175 psig 或更高。"
+        }
+      ],
+      "expected_answer_points": [
+        "25",
+        "125",
+        "psig"
+      ],
+      "must_refuse": false,
+      "forbidden_terms": []
+    },
+    {
+      "id": "Q23",
+      "category": "principle",
+      "lang": "zh",
+      "question": "双作用往复式压缩机与单作用的核心区别是什么？",
+      "answerable": true,
+      "expected": [
+        {
+          "doc_key": "doe-compressed-air-sourcebook",
+          "pages": [
+            11
+          ],
+          "basis": "手册第 11 页：'Double-acting reciprocating compressors use both sides of the piston for air compression, almost doubling the capacity for a given cylinder size.'"
+        }
+      ],
+      "expected_answer_points": [
+        "两侧|both sides|双面",
+        "活塞|piston",
+        "容量|capacity|产能"
+      ],
+      "must_refuse": false,
+      "forbidden_terms": []
+    },
+    {
+      "id": "Q24",
+      "category": "principle",
+      "lang": "zh",
+      "question": "喷油螺杆压缩机是如何完成压缩的？",
+      "answerable": true,
+      "expected": [
+        {
+          "doc_key": "doe-compressed-air-sourcebook",
+          "pages": [
+            12
+          ],
+          "basis": "手册第 12 页：两个相互啮合的转子，空气被截留在齿间与壳体之间，随啮合推进空间减小、压力升高。"
+        }
+      ],
+      "expected_answer_points": [
+        "转子|rotor",
+        "啮合|intermesh",
+        "空间|体积|space",
+        "压力|pressure"
+      ],
+      "must_refuse": false,
+      "forbidden_terms": []
+    },
+    {
+      "id": "Q25",
+      "category": "principle",
+      "lang": "zh",
+      "question": "离心式压缩机是如何把能量转化为压力的？",
+      "answerable": true,
+      "expected": [
+        {
+          "doc_key": "doe-compressed-air-sourcebook",
+          "pages": [
+            14
+          ],
+          "basis": "手册第 14 页：叶轮给空气动能，扩压器和蜗壳把速度能转换为压力能。"
+        }
+      ],
+      "expected_answer_points": [
+        "叶轮|impeller",
+        "扩压器|diffuser|蜗壳|volute",
+        "速度|velocity|动能",
+        "压力|pressure"
+      ],
+      "must_refuse": false,
+      "forbidden_terms": []
+    },
+    {
+      "id": "Q26",
+      "category": "principle",
+      "lang": "zh",
+      "question": "储气罐（air receiver）的主要作用是什么？",
+      "answerable": true,
+      "expected": [
+        {
+          "doc_key": "doe-compressed-air-sourcebook",
+          "pages": [
+            19
+          ],
+          "basis": "手册第 19 页：'Receivers are used to provide compressed air storage capacity to meet peak demand events and help control system pressure...'"
+        }
+      ],
+      "expected_answer_points": [
+        "储存|storage|储气",
+        "峰值|peak",
+        "压力|pressure"
+      ],
+      "must_refuse": false,
+      "forbidden_terms": []
+    },
+    {
+      "id": "Q27",
+      "category": "principle",
+      "lang": "zh",
+      "question": "压力/流量控制器（Pressure/Flow Controller）的作用是什么？",
+      "answerable": true,
+      "expected": [
+        {
+          "doc_key": "doe-compressed-air-sourcebook",
+          "pages": [
+            19
+          ],
+          "basis": "手册第 19 页：'a device that serves to separate the supply side ... from the demand side.'"
+        }
+      ],
+      "expected_answer_points": [
+        "供应侧|supply side",
+        "需求侧|demand side",
+        "分离|separate|隔离"
+      ],
+      "must_refuse": false,
+      "forbidden_terms": []
+    },
+    {
+      "id": "Q28",
+      "category": "principle",
+      "lang": "zh",
+      "question": "冷冻式干燥机通常能把压力露点降到什么范围？",
+      "answerable": true,
+      "expected": [
+        {
+          "doc_key": "doe-compressed-air-sourcebook",
+          "pages": [
+            17
+          ],
+          "basis": "手册第 17 页：'Allowing for separator efficiency, a pressure dew point of between 35 and 40°F can usually be obtained.'"
+        }
+      ],
+      "expected_answer_points": [
+        "35",
+        "40",
+        "露点|dew point"
+      ],
+      "must_refuse": false,
+      "forbidden_terms": []
+    },
+    {
+      "id": "Q29",
+      "category": "principle",
+      "lang": "zh",
+      "question": "检测压缩空气泄漏最推荐的方法是什么？",
+      "answerable": true,
+      "expected": [
+        {
+          "doc_key": "doe-compressed-air-sourcebook",
+          "pages": [
+            34
+          ],
+          "basis": "手册第 34 页：'The best way to detect leaks is to use an ultrasonic acoustic detector...'"
+        }
+      ],
+      "expected_answer_points": [
+        "超声波|ultrasonic"
+      ],
+      "must_refuse": false,
+      "forbidden_terms": []
+    },
+    {
+      "id": "Q30",
+      "category": "principle",
+      "lang": "zh",
+      "question": "压缩空气系统中最常见的泄漏部位有哪些？",
+      "answerable": true,
+      "expected": [
+        {
+          "doc_key": "doe-tip-sheet-3-minimize-leaks",
+          "pages": [
+            1
+          ],
+          "basis": "Tip Sheet #3 第 1 页：couplings、hoses、tubes、fittings、pipe joints、quick disconnects、FRLs、condensate traps、valves、flanges、packings、thread sealants、point-of-use devices。"
+        }
+      ],
+      "expected_answer_points": [
+        "接头|coupling|fittings",
+        "软管|hose|管",
+        "阀门|valve",
+        "排水|condensate|疏水"
+      ],
+      "must_refuse": false,
+      "forbidden_terms": []
+    },
+    {
+      "id": "Q31",
+      "category": "principle",
+      "lang": "zh",
+      "question": "压缩空气系统的预防性维护应该覆盖哪些时间周期？",
+      "answerable": true,
+      "expected": [
+        {
+          "doc_key": "doe-tip-sheet-6-preventive-maintenance",
+          "pages": [
+            2
+          ],
+          "basis": "Tip Sheet #6 第 2 页：'Proper maintenance requires daily, weekly, monthly, quarterly, semi-annual, and annual procedures.'"
+        }
+      ],
+      "expected_answer_points": [
+        "每日|daily",
+        "每周|weekly",
+        "每月|monthly",
+        "年度|annual|年"
+      ],
+      "must_refuse": false,
+      "forbidden_terms": []
+    },
+    {
+      "id": "Q32",
+      "category": "principle",
+      "lang": "zh",
+      "question": "稳定压缩空气系统压力有哪三种方法？",
+      "answerable": true,
+      "expected": [
+        {
+          "doc_key": "doe-tip-sheet-8-stabilizing-pressure",
+          "pages": [
+            1
+          ],
+          "basis": "Tip Sheet #8 第 1 页：'adequate primary and secondary storage, Pressure/Flow Controllers (P/FCs), and dedicated compressors.'"
+        }
+      ],
+      "expected_answer_points": [
+        "储气|storage",
+        "压力/流量控制器|P/FC|Pressure/Flow",
+        "专用压缩机|dedicated compressor"
+      ],
+      "must_refuse": false,
+      "forbidden_terms": []
+    },
+    {
+      "id": "Q33",
+      "category": "identifier",
+      "lang": "zh",
+      "question": "CAGI 是什么组织？",
+      "answerable": true,
+      "expected": [
+        {
+          "doc_key": "doe-compressed-air-sourcebook",
+          "pages": [
+            79,
+            94,
+            104
+          ],
+          "basis": "手册 p79 给出 CAGI 全称与定位；p94、p104 也给出组织性质说明（同一需求的可接受页面）。"
+        }
+      ],
+      "expected_answer_points": [
+        "Compressed Air and Gas Institute|压缩空气与气体协会",
+        "制造商|manufacturer",
+        "行业|组织|association"
+      ],
+      "must_refuse": false,
+      "forbidden_terms": []
+    },
+    {
+      "id": "Q34",
+      "category": "identifier",
+      "lang": "zh",
+      "question": "acfm 和 bhp/100 acfm 在压缩机能效比较中是什么意思？",
+      "answerable": true,
+      "expected": [
+        {
+          "doc_key": "doe-compressed-air-sourcebook",
+          "pages": [
+            89,
+            92,
+            94
+          ],
+          "basis": "p89 术语表定义 Actual cfm (acfm)；p92 说明 bhp/100 acfm 是能效指标；p94 给出完整表述。"
+        }
+      ],
+      "expected_answer_points": [
+        "actual cubic feet|实际立方英尺",
+        "brake horsepower|制动马力|bhp"
+      ],
+      "must_refuse": false,
+      "forbidden_terms": []
+    },
+    {
+      "id": "Q35",
+      "category": "identifier",
+      "lang": "zh",
+      "question": "psig 这个单位是什么意思？",
+      "answerable": true,
+      "expected": [
+        {
+          "doc_key": "doe-compressed-air-sourcebook",
+          "pages": [
+            10,
+            26,
+            90,
+            94
+          ],
+          "basis": "p10、p26、p94 出现 pounds per square inch gauge (psig)；p90 术语表 Gauge Pressure 亦说明以 psig 表示。"
+        }
+      ],
+      "expected_answer_points": [
+        "pounds per square inch|磅每平方英寸|psi"
+      ],
+      "must_refuse": false,
+      "forbidden_terms": []
+    },
+    {
+      "id": "Q36",
+      "category": "identifier",
+      "lang": "zh",
+      "question": "DOE/EE-1340 是哪份文档的编号？",
+      "answerable": true,
+      "expected": [
+        {
+          "doc_key": "doe-compressed-air-sourcebook",
+          "pages": [
+            114
+          ],
+          "basis": "手册第 114 页：'DOE/Publication Number: DOE/EE-1340'，即本手册 Improving Compressed Air System Performance 第三版。"
+        }
+      ],
+      "expected_answer_points": [
+        "Improving Compressed Air System Performance|压缩空气系统性能",
+        "sourcebook|手册|第三版|Third Edition"
+      ],
+      "must_refuse": false,
+      "forbidden_terms": []
+    },
+    {
+      "id": "Q37",
+      "category": "identifier",
+      "lang": "zh",
+      "question": "MetroPT-3 论文里的 FMEA 是用来做什么的？",
+      "answerable": true,
+      "expected": [
+        {
+          "doc_key": "metropt-dataset-paper",
+          "pages": [
+            2
+          ],
+          "basis": "论文第 2 页：FMEA/FMECA 用于传感器选型，由 Metro of Porto 维护团队完成。"
+        }
+      ],
+      "expected_answer_points": [
+        "传感器|sensor",
+        "选型|selection",
+        "FMEA"
+      ],
+      "must_refuse": false,
+      "forbidden_terms": []
+    },
+    {
+      "id": "Q38",
+      "category": "multi_doc",
+      "lang": "zh",
+      "question": "MetroPT-3 的 TP3 与通用压缩空气资料中的系统压力概念如何对应？",
+      "answerable": true,
+      "expected": [
+        {
+          "doc_key": "metropt3-data-description",
+          "pages": [
+            2
+          ],
+          "basis": "TP3 是气动面板处产生的压力（数据集直接说明）。"
+        },
+        {
+          "doc_key": "doe-compressed-air-sourcebook",
+          "pages": [
+            19,
+            37,
+            39
+          ],
+          "basis": "通用手册 p19（供应侧/需求侧与储气）、p37（压力下降与控制）、p39（控制设定与压力）均讨论系统压力，属同一需求的可接受页面。"
+        }
+      ],
+      "expected_answer_points": [
+        "TP3",
+        "气动面板|pneumatic panel",
+        "系统压力|system pressure"
+      ],
+      "must_refuse": false,
+      "forbidden_terms": []
+    },
+    {
+      "id": "Q39",
+      "category": "multi_doc",
+      "lang": "zh",
+      "question": "空气泄漏在 MetroPT-3 中属于哪类官方故障？通用资料建议如何检测泄漏？",
+      "answerable": true,
+      "expected": [
+        {
+          "doc_key": "metropt-dataset-paper",
+          "pages": [
+            5
+          ],
+          "basis": "论文第 5 页：Table 2 列出 2 次 Air Leak 故障（clients、air dryer）。"
+        },
+        {
+          "doc_key": "doe-tip-sheet-3-minimize-leaks",
+          "pages": [
+            1
+          ],
+          "basis": "Tip Sheet #3 p1 给泄漏识别与预防计划；Sourcebook p34 也给出超声波检漏方法，二者均可接受。",
+          "also_ok": [
+            {
+              "doc_key": "doe-compressed-air-sourcebook",
+              "pages": [
+                34
+              ]
+            }
+          ]
+        }
+      ],
+      "expected_answer_points": [
+        "空气泄漏|air leak",
+        "超声波|ultrasonic|检漏|检测"
+      ],
+      "must_refuse": false,
+      "forbidden_terms": []
+    },
+    {
+      "id": "Q40",
+      "category": "multi_doc",
+      "lang": "zh",
+      "question": "LPS 在什么压力下动作？通用资料对稳定系统压力有什么建议？",
+      "answerable": true,
+      "expected": [
+        {
+          "doc_key": "metropt3-data-description",
+          "pages": [
+            3
+          ],
+          "basis": "数据集说明第 3 页：LPS 在压力低于 7 bar 时激活。"
+        },
+        {
+          "doc_key": "doe-tip-sheet-8-stabilizing-pressure",
+          "pages": [
+            1
+          ],
+          "basis": "Tip Sheet #8 第 1 页：储气、P/FC、专用压缩机三种方法。"
+        }
+      ],
+      "expected_answer_points": [
+        "7 bar|7 巴|7 个巴|低于 7",
+        "储气|storage",
+        "压力/流量控制器|P/FC|Pressure/Flow",
+        "专用压缩机|dedicated compressor"
+      ],
+      "must_refuse": false,
+      "forbidden_terms": []
+    },
+    {
+      "id": "Q41",
+      "category": "multi_doc",
+      "lang": "zh",
+      "question": "MetroPT-3 用哪个传感器监测油温？通用资料建议如何做压缩空气系统维护？",
+      "answerable": true,
+      "expected": [
+        {
+          "doc_key": "metropt3-data-description",
+          "pages": [
+            2
+          ],
+          "basis": "数据集说明第 2 页：Oil Temperature 测量压缩机润滑油温度。"
+        },
+        {
+          "doc_key": "doe-tip-sheet-6-preventive-maintenance",
+          "pages": [
+            1,
+            2
+          ],
+          "basis": "Tip Sheet #6 p1 给出维护计划与负责人要求；p2 给出维护周期与基准化建议。"
+        }
+      ],
+      "expected_answer_points": [
+        "Oil Temperature|油温",
+        "维护|maintenance"
+      ],
+      "must_refuse": false,
+      "forbidden_terms": []
+    },
+    {
+      "id": "Q42",
+      "category": "unknown",
+      "lang": "zh",
+      "question": "MetroPT-3 这台压缩机的厂商和具体型号是什么？",
+      "answerable": false,
+      "must_refuse": true,
+      "expected": [],
+      "expected_answer_points": [],
+      "forbidden_terms": [
+        "阿特拉斯",
+        "Atlas Copco",
+        "Ingersoll Rand",
+        "GA30",
+        "GA37",
+        "型号为"
+      ]
+    },
+    {
+      "id": "Q43",
+      "category": "unknown",
+      "lang": "zh",
+      "question": "MetroPT-3 压缩机的额定排气压力和额定排量是多少？",
+      "answerable": false,
+      "must_refuse": true,
+      "expected": [],
+      "expected_answer_points": [],
+      "forbidden_terms": [
+        "额定排气压力为",
+        "额定排量为",
+        "0.7 MPa",
+        "0.8 MPa",
+        "8 bar 额定",
+        "7.5 bar 额定"
+      ]
+    },
+    {
+      "id": "Q44",
+      "category": "unknown",
+      "lang": "zh",
+      "question": "MetroPT-3 官方推荐的换油周期是多少小时？",
+      "answerable": false,
+      "must_refuse": true,
+      "expected": [],
+      "expected_answer_points": [],
+      "forbidden_terms": [
+        "500 小时",
+        "1000 小时",
+        "2000 小时",
+        "4000 小时",
+        "8000 小时"
+      ]
+    },
+    {
+      "id": "Q45",
+      "category": "unknown",
+      "lang": "zh",
+      "question": "2020 年 5 月 1 日这台压缩机发生的具体故障原因是什么？",
+      "answerable": false,
+      "must_refuse": true,
+      "expected": [],
+      "expected_answer_points": [],
+      "forbidden_terms": [
+        "已确认故障",
+        "故障原因是",
+        "确定为"
+      ]
+    },
+    {
+      "id": "Q46",
+      "category": "unknown",
+      "lang": "zh",
+      "question": "报警代码 E-204 代表什么故障？",
+      "answerable": false,
+      "must_refuse": true,
+      "expected": [],
+      "expected_answer_points": [],
+      "forbidden_terms": [
+        "E-204 表示",
+        "E-204 代表",
+        "代码含义为"
+      ]
+    },
+    {
+      "id": "Q47",
+      "category": "model_mismatch",
+      "lang": "zh",
+      "question": "Atlas Copco GA30 空压机的额定排气压力是多少？",
+      "answerable": false,
+      "must_refuse": true,
+      "expected": [],
+      "expected_answer_points": [],
+      "forbidden_terms": [
+        "GA30 的额定压力为",
+        "0.7 MPa",
+        "7.5 bar",
+        "8 bar",
+        "8.2 bar"
+      ]
+    },
+    {
+      "id": "Q48",
+      "category": "model_mismatch",
+      "lang": "zh",
+      "question": "阿特拉斯·科普柯 GA37 空压机的保养间隔是多少小时？",
+      "answerable": false,
+      "must_refuse": true,
+      "expected": [],
+      "expected_answer_points": [],
+      "forbidden_terms": [
+        "2000 小时",
+        "4000 小时",
+        "8000 小时",
+        "保养间隔为"
+      ]
+    },
+    {
+      "id": "Q49",
+      "category": "model_mismatch",
+      "lang": "zh",
+      "question": "Kaeser ASD 40 空压机控制器的参数怎么设置？",
+      "answerable": false,
+      "must_refuse": true,
+      "expected": [],
+      "expected_answer_points": [],
+      "forbidden_terms": [
+        "参数设置为",
+        "设定值为",
+        "ASD 40 的"
+      ]
+    },
+    {
+      "id": "Q50",
+      "category": "irrelevant",
+      "lang": "zh",
+      "question": "今天北京天气怎么样？",
+      "answerable": false,
+      "must_refuse": true,
+      "expected": [],
+      "expected_answer_points": [],
+      "forbidden_terms": []
+    },
+    {
+      "id": "Q51",
+      "category": "irrelevant",
+      "lang": "zh",
+      "question": "如何用 Python 读取一个 CSV 文件？",
+      "answerable": false,
+      "must_refuse": true,
+      "expected": [],
+      "expected_answer_points": [],
+      "forbidden_terms": [
+        "pandas.read_csv",
+        "import csv",
+        "```python"
+      ]
+    },
+    {
+      "id": "Q52",
+      "category": "irrelevant",
+      "lang": "zh",
+      "question": "请写一首关于空气压缩机的诗。",
+      "answerable": false,
+      "must_refuse": true,
+      "expected": [],
+      "expected_answer_points": [],
+      "forbidden_terms": []
+    }
+  ]
+}

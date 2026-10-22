@@ -1,0 +1,27 @@
+# Phase 1B 运行时依赖（已在 Conda 环境 ms_pointcloud_midterm 中安装并实测）。
+# 优先用 conda 安装：conda install -n ms_pointcloud_midterm -c conda-forge \
+#     "sqlalchemy>=2.0" "alembic>=1.13" "psycopg>=3.2" "pytest>=8"
+#
+# 说明：本次实际解析到的版本如下（Python 3.11.15）；版本号仅记录实测结果，
+# 不等于长期锁定策略，后续按需固定。
+SQLAlchemy==2.1.6      # ORM 与 Core
+alembic==1.20.0        # 数据库迁移
+psycopg==3.3.4         # psycopg 3 驱动（含 psycopg-c 3.3.4 二进制实现）
+pytest==9.1.1          # 测试
+pytest-cov             # 覆盖率（P2-8；实际版本见 pip list）
+# 数据读取与统计（阶段 1A 已使用）
+pandas==3.0.3
+numpy==2.4.6
+
+# 阶段 1C：只读查询服务（已在 Conda 环境 ms_pointcloud_midterm 中安装并实测）
+# 优先 conda：conda install -n ms_pointcloud_midterm -c conda-forge fastapi uvicorn
+fastapi==0.141.1       # Web 框架（含 OpenAPI/Swagger）
+starlette==1.9.0       # FastAPI 依赖的 ASGI 工具集
+uvicorn==0.54.0        # ASGI 服务器
+httpx==0.28.1          # TestClient / 后续 Agent 调用外部服务
+
+# 阶段 2：RAG 知识库（实测版本）
+# 优先 conda：conda install -n ms_pointcloud_midterm -c conda-forge pymupdf
+pymupdf==1.28.0        # PDF 解析（PyMuPDF）
+pgvector==0.4.2        # SQLAlchemy 的 vector 类型（服务端 pgvector 0.8.7）
+# Embedding / LLM 通过本机 Ollama HTTP API 调用，不额外引入 SDK；无需 API Key。

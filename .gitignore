@@ -1,0 +1,89 @@
+# Python 缓存、测试产物与虚拟环境
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+.coverage.*
+htmlcov/
+.tox/
+.nox/
+.venv/
+venv/
+env/
+*.egg-info/
+
+# 前端依赖及构建产物
+node_modules/
+dist/
+build/
+.next/
+.vite/
+coverage/
+*.tsbuildinfo
+
+# 编辑器和操作系统临时文件
+.idea/
+.vscode/
+.DS_Store
+._*
+Thumbs.db
+*.swp
+*.swo
+*~
+
+# 本地配置和密钥；保留安全示例
+.env
+.env.*
+!.env.example
+.envrc
+*.pem
+*.key
+*.p12
+*.pfx
+secrets/
+
+# 日志及缓存
+*.log
+logs/
+.cache/
+.cache-*/
+
+# 原始与派生数据默认不提交，允许保留嵌套目录占位
+/data/raw/**
+!/data/raw/**/
+!/data/raw/**/.gitkeep
+/data/processed/**
+!/data/processed/**/
+!/data/processed/**/.gitkeep
+
+# 大型样本格式与数据压缩包；小型样本提交前人工审查
+/data/**/*.parquet
+/data/**/*.h5
+/data/**/*.hdf5
+/data/**/*.npy
+/data/**/*.npz
+/data/**/*.zip
+/data/**/*.tar
+/data/**/*.gz
+/data/**/*.7z
+
+# 本地数据库、导出及持久化卷
+*.db
+*.sqlite
+*.sqlite3
+*.dump
+*.backup
+*.sql
+*.sql.gz
+*.sql.zip
+pgdata/
+postgres-data/
+
+# db.sh 临时 compose env 文件（含解析后的配置，退出即删）
+.env.compose.*
+
+# 知识库 PDF 不提交（可由 sources.json + fetch 脚本复现）
+/knowledge/raw/*.pdf
+!/knowledge/raw/.gitkeep
