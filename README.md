@@ -18,7 +18,9 @@
 | Agent 评估：51 题开发集 + 11 题留出集、工具选择/数值/引用/耗时指标 | ✅ 阶段 3 |
 | 智能运维 Agent（LangGraph 单 Agent + 6 个只读工具、证据整合、执行 Trace） | ✅ 阶段 3 |
 | Agent-Probe 行为审计（Trace 规范化、11 条确定性规则、LLM Judge、混合审计、审计 API、80 条评估集） | ✅ 阶段 4 |
-| 可视化（设备趋势、引用、轨迹、审计面板） | ⬜ 阶段 5（未开始） |
+| 终端界面 TUI：Agent 对话、设备数据、知识检索、Trace、审计面板、系统状态 | ✅ 阶段 5 |
+| 统一 API Client（超时/重试/错误结构/令牌隔离）与 CLI 入口（`iaa-tui`） | ✅ 阶段 5 |
+| 真实端到端演示（Agent → Trace → Rule Only / Hybrid 审计 → 证据）与终端截图 | ✅ 阶段 5 |
 
 ## 技术栈规划
 
@@ -28,7 +30,7 @@
 | 存储 | PostgreSQL、pgvector |
 | AI 应用 | Embedding（`bge-m3`，1024 维）、RAG、混合检索；LangGraph 1.2.2（单 Agent + 多工具） |
 | 审计 | Agent Trace、确定性规则、LLM-as-a-Judge、审计评估 |
-| 前端 | React、TypeScript、Tailwind CSS |
+| 前端 | **Textual 1.0 + Rich**（终端 TUI；不使用 React/Vue，无 Node 构建链） |
 | 工程 | Docker Compose、pytest、Git、Alembic |
 
 已实测版本：PostgreSQL 17.11 + pgvector 0.8.7 + pg_trgm 1.6、SQLAlchemy 2.1.6、Alembic 1.20.0、
@@ -37,6 +39,8 @@ psycopg 3.3.4、pytest 9.1.1、pandas 3.0.3（Python 3.11.15，Conda 环境 `ms_
 `qwen2.5:7b-instruct` 通过本机 Ollama 调用，无需外部 API Key。
 阶段 3 新增：`langgraph 1.2.2`（conda-forge 安装，未升级既有依赖）。
 阶段 4 未新增第三方依赖（复用 SQLAlchemy/Pydantic/Ollama 客户端）。
+阶段 5 新增：`textual 1.0.0`（`>=1.0,<2.0`）与测试用 `pytest-asyncio 1.4.0`；
+同时提供 `backend/pyproject.toml`（`pip install -e backend` 生成 `iaa-tui` 命令）。
 依赖清单见 `backend/requirements.txt`。
 
 ## 项目目录说明
@@ -53,11 +57,12 @@ psycopg 3.3.4、pytest 9.1.1、pandas 3.0.3（Python 3.11.15，Conda 环境 `ms_
 | `backend/app/rag/` | 知识库：PDF 解析、切分、Embedding、混合检索、RAG 回答 |
 | `backend/app/agent/` | LangGraph 工作流、意图/规划、只读工具、证据整合与执行 Trace |
 | `backend/app/audit/` | Agent-Probe：Trace 规范化、确定性规则 R1–R10、LLM Judge、混合审计、回放与持久化 |
+| `backend/app/tui/` | **阶段 5**：Textual 终端界面（6 个页面、统一 API Client、状态聚合、CLI 入口） |
 | `backend/tests/` | 后续单元、集成与评估测试 |
-| `frontend/` | 运行与审计可视化 |
+| `frontend/` | 占位目录：本阶段前端形态为终端 TUI（`backend/app/tui/`），不使用 React/Vue |
 | `docker-compose.yml` | PostgreSQL + pgvector 单服务编排（命名卷、健康检查） |
 | `data/raw/`、`data/processed/`、`data/samples/` | 原始数据、派生数据与可分享小样本 |
-| `scripts/` | 数据获取/体检/分析（1A）、导入与验证（1B）、`db.sh` 与 `migrate.sh` |
+| `scripts/` | 数据获取/体检/分析（1A）、导入与验证（1B）、`db.sh`、`migrate.sh`、`start_api.sh`、`start_tui.sh`、`check_system.sh`、`demo_phase5.py` |
 | `deploy/initdb/` | 容器首次启动时启用 pgvector 扩展并创建独立测试库 |
 | `knowledge/` | `sources.json` 来源清单、`raw/` 文档（不进 Git）、`eval/` 评估集与结果 |
 | `configs/` | 非敏感配置 |
@@ -96,9 +101,10 @@ psycopg 3.3.4、pytest 9.1.1、pandas 3.0.3（Python 3.11.15，Conda 环境 `ms_
 
 阶段 1C 收口后的实际状态：FastAPI 只读查询服务已完成（8 个接口、193 项测试、覆盖率 96%）。
 
-当前整体状态：阶段 0、1A、1B（含缺陷修复）、1C、2 已完成开发与自测，阶段 3 已完成开发、测试与评估，
-**阶段 4（Agent-Probe 行为审计）已完成开发、测试与评估**；阶段 5（前端集成）未开始。
+当前整体状态：阶段 0、1A、1B（含缺陷修复）、1C、2、3、4 已完成开发与自测，
+**阶段 5（系统集成与 Textual 终端界面）已完成开发、测试与真实端到端演示**。
 **阶段 2 未做独立验收**，不得视为已正式验收通过。
+主库迁移版本仍为 `0004`（代码期望 `0008`），因此 TUI 状态栏如实显示为 `degraded`。
 
 ## 阶段 2 已交付（2026-10-22）
 
@@ -183,7 +189,113 @@ psycopg 3.3.4、pytest 9.1.1、pandas 3.0.3（Python 3.11.15，Conda 环境 `ms_
 阶段 4 详情：[审计设计](docs/audit_design.md) · [审计规则](docs/audit_rules.md) ·
 [审计评估](docs/audit_evaluation.md) · [Phase 4 报告](docs/phase4_report.md)
 
-仍未实现：React 前端（阶段 5）。
+阶段 4 的审计界面沿用后续阶段的终端 TUI（不实现 React 前端）。
+
+## 阶段 5 已交付（终端 TUI 与系统集成）
+
+- **形态**：Textual 1.0 终端界面，一个命令启动（`iaa-tui` / `python -m app.tui`），
+  不使用 React/Vue，也没有 Node 构建链。`frontend/` 仅保留占位目录。
+- **布局**：顶部真实状态栏（API / 工业库 / RAG / Audit / LLM）+ 左侧导航 + 主操作区 + 状态行 + 快捷键 Footer。
+- **6 个页面**：
+  1. **Agent Chat**：多行输入（Enter 换行、`Ctrl+S` 发送）、Markdown 回答、工具调用明细（可展开）、
+     证据（数据事实 + 文档逐字摘录、页码、chunk_id，可展开）、trace_id 复制、一键跳转 Trace / 审计；
+  2. **Equipment**：设备选择、统计 / 质量 / 故障 / 采样四个标签页，Sparkline 用真实采样值（缺失值不插值）；
+  3. **Knowledge**：vector / keyword / hybrid 检索，结果含文档、页码、chunk_id、适用范围与 RRF 分数说明；
+  4. **Trace Explorer**：事件时间线 + 单事件入参/输出，按类型过滤，缺 evidence manifest 明确标注；
+  5. **Audit Reports**：Rule Only（默认，毫秒级）/ LLM Only / Hybrid（约 18–40 s），
+     五类结论区分显示（`UNKNOWN` 绝不显示为 `PASS`），支持历史审计加载与人工复核（PATCH 后重读服务端结果）；
+  6. **System Status**：真实探测各服务与库版本，可选「深度探测」真实调用 Embedding 与 LLM。
+- **统一 API Client**：`httpx.AsyncClient`，分操作超时（30/90/300/600 s）、统一 `ApiError`、
+  只对幂等 GET 重试（POST/PATCH 不重试）、审计 Token 只发审计接口且不入日志、`trust_env=False`。
+- **异步**：全部请求在 Textual 异步 Worker 中执行；真实 Hybrid 审计（17–25 s）期间界面可自由切换页面；
+  「取消等待」明确说明服务端任务未被取消（后端无取消接口）。
+- **诚实状态**：主库 `0004` ≠ 代码期望 `0008` → `degraded`；LLM/Embedding 未深度探测 → 「未探测」；
+  旧 Trace 缺 evidence manifest → 明确标注；冻结候选不等于故障；通用资料不等于本设备参数。
+- **实测**：`561 passed / 14 skipped`，整体覆盖率 **88%**（`app/tui` 83%）；
+  新增 TUI 单测 54 项 + 真实端到端 7 项（`IAA_TUI_E2E=1`）。
+- **真实演示**：`python scripts/demo_phase5.py` 跑完整闭环并保存真实终端截图
+  （`docs/figures/phase5/*.svg`）。一次真实问答：状态 `completed`、工具 6 次调用、证据 15 条、
+  服务端耗时 8.5 s；同一 Trace 的 Rule Only 审计 11 条规则全部 PASS（约 4 ms），
+  Hybrid 审计 16 项结论、耗时 24.98 s。
+
+![系统状态](docs/figures/phase5/01-system-status.svg)
+![Agent Chat](docs/figures/phase5/02-agent-chat.svg)
+![Trace Explorer](docs/figures/phase5/03-trace-explorer.svg)
+![审计（Rule Only）](docs/figures/phase5/04-audit-rule-only.svg)
+
+（上图由 `scripts/demo_phase5.py` 在真实后端上运行后由 Textual 直接导出，不是手绘示意图。）
+
+阶段 5 详情：[TUI 设计](docs/tui_design.md) · [部署说明](docs/deployment.md) ·
+[演示指南](docs/demo_guide.md) · [Phase 5 报告](docs/phase5_report.md)
+
+## 终端界面使用方法
+
+```bash
+# 一次性
+conda activate ms_pointcloud_midterm
+pip install -r backend/requirements.txt
+pip install -e backend            # 生成 iaa-tui 命令（也可用 python -m app.tui）
+
+# 每次
+scripts/db.sh up                  # 若数据库未运行
+scripts/start_api.sh              # 后端：不做迁移、不导入数据
+scripts/start_tui.sh              # 另一个终端：启动 TUI
+```
+
+| 按键 | 作用 |
+| --- | --- |
+| `1`–`6` | 切换页面（焦点在输入框时不生效，改用侧栏或 `Ctrl+K`） |
+| `Ctrl+K` | 快速切换页面 |
+| `Ctrl+R` | 刷新当前页面 |
+| `Ctrl+L` | 清空当前页面视图（不动服务端数据） |
+| `Ctrl+S` | 当前页面主操作（发送 / 查询 / 检索 / 加载 / 发起审计） |
+| `Ctrl+X` | Chat 取消界面等待（服务端任务不会被取消） |
+| `F1` / `Esc` / `Ctrl+Q` | 帮助 / 关闭弹窗 / 退出 |
+
+典型流程：`1` 提问 → 展开工具与证据 → 「打开 Trace」（`4`）→ 「发起审计」（`5`，先 Rule Only，
+需要语义审计再切 Hybrid）→ 查看风险发现与证据 → 必要时提交人工复核 → `6` 检查系统状态。
+
+## 测试方法
+
+```bash
+cd backend
+
+# 单元 + 界面测试（使用 MockTransport，不需要后端）
+python -m pytest tests/test_tui_client.py tests/test_tui_app.py tests/test_tui_status_cli.py -q
+
+# 全量回归 + 覆盖率（默认不含真实端到端）
+python -m pytest -q --cov=app --cov-report=term-missing
+
+# 真实后端端到端（需要 API + PostgreSQL + Ollama 在运行）
+IAA_TUI_E2E=1 python -m pytest tests/test_tui_integration_real.py -q -m slow
+
+# 完整业务演示（同时导出终端截图）
+python ../scripts/demo_phase5.py
+```
+
+## 项目评估指标（实测，非目标值）
+
+| 指标 | 实测 |
+| --- | --- |
+| 测试 | 561 passed / 14 skipped；整体覆盖率 88%（`app/tui` 83%） |
+| TUI 单测 | 54 项（Client 18 / TUI 21 / 状态与 CLI 15） |
+| 真实端到端 | 7 项通过（Agent / Trace / Rule Only / Hybrid / RAG / 传感器 / 状态一致性） |
+| Agent 单次问答 | 3–9 s（本机 Ollama，随负载波动） |
+| Rule Only 审计 | 约 4 ms/条 Trace |
+| Hybrid 审计 | 17–25 s/条 Trace（本地 7B Judge） |
+| 知识检索 | 约 0.9 s/次（hybrid，含 Embedding） |
+| 设备窗口查询 | 单日窗口 6,301 行统计 + 质量 + 故障 + 采样 < 1 s |
+
+## 当前限制
+
+1. **无流式输出**：后端不提供流式事件，工具调用在执行结束后一次性展示（不做假的实时过程）。
+2. **取消不终止服务端任务**：后端无取消接口，TUI 只取消界面等待。
+3. **审计是离线可观测性审计**，不是运行时拦截，不能阻止已完成的 Agent 行为。
+4. **主库仍为 `0004`**（代码期望 `0008`）：状态显示 `degraded`；迁移需单独批准，TUI 不会自动迁移。
+5. **接口没有完整认证**：审计接口只有可选共享令牌，只允许本机或隔离网络演示。
+6. **LLM Judge 较慢**（17–25 s/条），日常演示建议 Rule Only，需要语义审计再跑 Hybrid。
+7. **进程内 Trace 有上限**（默认保留最近 200 条），更早的 Trace 依赖审计库或 Trace 文件回放。
+8. **知识引用页码精度**沿用阶段 2 的检索排序结果，未引入 Reranker。
 
 ## 快速开始（数据、查询服务与知识库）
 
@@ -406,12 +518,15 @@ scripts/migrate.sh target
 
 ## 后续工作计划
 
-阶段 2（知识库 RAG）已完成开发、测试与评估，详见 [Phase 2 报告](docs/phase2_report.md)。
-下一阶段（阶段 3）将构建 LangGraph Agent 与受约束的查询/检索工具；**本次未启动**。
+阶段 1A–4 与阶段 5（终端 TUI 与系统集成）均已完成开发、测试与评估，
+各阶段报告见下方文档索引。**本阶段不再扩展新功能。**
 
-生产库结构仍停在 `0004`（迁移 `0005`/`0006` 与 23 行派生字段修订待批准），
-本阶段新增的 `0007` 也只在隔离库执行。Phase 1C 的只读 API 在 `0004` 上仍可运行；
-详见 [Phase 1B 最终收口验收报告](docs/phase1b_final_acceptance.md)。
+仍需人工决策/后续处理的事项：
+
+- 生产库结构停在 `0004`（迁移 `0005`/`0006`/`0007`/`0008` 均未应用到主库），
+  TUI 会如实显示 `degraded`；如需统一版本，应单独评审后执行 `scripts/migrate.sh`。
+- 阶段 2 未做独立验收（阶段 3 起只消费其检索能力），因此其指标仍属自测结果。
+- 审计接口的认证与权限仍是"可选共享令牌 + 本机部署"级别，面向公网部署前需要补齐鉴权。
 
 - [系统架构](docs/architecture.md)
 - [数据来源](docs/data_sources.md)
@@ -426,5 +541,9 @@ scripts/migrate.sh target
 - [知识库来源](docs/knowledge_sources.md)
 - [RAG 评估](docs/rag_evaluation.md)
 - [Phase 2 报告](docs/phase2_report.md)
+- [TUI 设计](docs/tui_design.md)
+- [部署说明](docs/deployment.md)
+- [演示指南](docs/demo_guide.md)
+- [Phase 5 报告](docs/phase5_report.md)
 
 `.env.example` 仅用于说明未来配置项，不能直接连接生产服务。实际环境文件与原始数据不进入 Git。

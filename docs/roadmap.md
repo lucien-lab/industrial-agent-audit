@@ -1,9 +1,10 @@
 # 开发阶段规划
 
 所有验收指标在对应阶段记录实测结果；本文件没有未经验证的性能或准确率声明。
-当前状态：**阶段 0、1A、1B（含缺陷修复）、1C、2、3、4 已完成开发、测试与评估**。
+当前状态：**阶段 0、1A、1B（含缺陷修复）、1C、2、3、4、5 已完成开发、测试与评估**。
 生产库迁移 `0005`/`0006` 与 23 行派生字段修订**仍待批准**（生产库仍在 `0004`）；
 阶段 2 的 `0007` 只在隔离库执行，阶段 4 的 `0008` 只在 `iaa_audit_dev` / `*_test` 执行。
+阶段 5 **未新增迁移**，也未把任何迁移应用到主库。
 **阶段 2 未做独立验收**（按阶段 3 任务要求跳过），因此不得视为已正式验收通过。
 
 ## 阶段 0：项目初始化与架构规划 — 已完成
@@ -153,16 +154,43 @@
   单条审计约 18 s；旧/不完整 Trace 只能 UNKNOWN；标注规模 80、无标注者一致性；
   API 仅有可选共享令牌，默认限本机/隔离环境。
 
-## 阶段 5：系统集成、测试与可视化
+## 阶段 5：系统集成、终端界面（Textual TUI）与工程交付 — 已完成
 
-- 目标：完成可演示的端到端系统与工程交付。
-- 主要任务：设备趋势、知识引用、工具时间线和审计面板；接口联调；Docker Compose；集成与端到端测试；性能、错误状态及敏感信息检查。
-- 预期交付物：前端页面、部署说明、测试报告、演示用例、已知限制说明。
-- 验收标准：从干净环境按说明启动；完整演示数据查询→检索→Agent→追踪→审计；界面区分待处理、失败和已完成；展示引用、模型/策略版本及证据；性能与成本只报告实测结果；模拟案例与真实来源明确区分。
+- 目标：完成可演示的端到端系统与工程交付；**前端形态由 Web 改为 Textual 终端界面**。
+- 实测：
+  - **TUI**：`backend/app/tui/`（Textual 1.0.0），6 个页面（Agent Chat / Equipment / Knowledge /
+    Trace Explorer / Audit Reports / System Status）+ 顶部真实状态栏 + 底部状态行 + Footer；
+      纯终端交互，无 React/Vue/Node 构建链。
+  - **统一 API Client**：`httpx.AsyncClient`，只对幂等 GET 重试、POST/PATCH 不重试；
+    统一 `ApiError`（保留后端 `code/message/details/request_id`）；分操作超时
+    （查询 30 s / 检索 90 s / Agent 300 s / 审计 600 s）；`X-Audit-Token` 只发审计接口且不入日志；
+    `trust_env=False` 避免系统代理劫持本机请求。
+  - **异步与取消**：全部请求在 Textual 异步 Worker 中执行；真实 Hybrid 审计（约 17–25 s）期间
+    可自由切换页面；「取消等待」明确说明服务端任务未被取消。
+  - **诚实状态**：主库 `0004` ≠ 代码期望 `0008` → 状态栏与状态页显示 `degraded`；
+    LLM/Embedding 未深度探测 → 显示「未探测」；审计 `UNKNOWN` 绝不显示为 `PASS`；
+    旧 Trace 缺 evidence manifest 会明确标注。
+  - **可运行入口**：`iaa-tui`（`pip install -e backend` 的 console script）、`python -m app.tui`、
+    `scripts/start_tui.sh`；另有 `scripts/start_api.sh`、`scripts/check_system.sh`（均不迁移库）。
+  - **测试**：**561 passed / 14 skipped**，整体覆盖率 **88%**（`app/tui` 83%）；
+    新增 54 项 TUI 相关单测（Client 18 / TUI 21 / 状态与 CLI 15）；
+    真实端到端 7 项（`IAA_TUI_E2E=1`，真实 Agent + Trace + Rule Only + Hybrid + RAG + 传感器）。
+  - **真实演示**：`scripts/demo_phase5.py` 跑完整闭环并输出真实终端截图
+    （`docs/figures/phase5/*.svg`）与控制台记录（`docs/figures/phase5/demo_transcript.txt`）。
+  - **数据库**：主库仍 `0004`、RAG 开发库仍 `0007`、审计库 `0008`；本阶段未执行任何迁移、
+    未重建知识库、未重新导入数据；审计库新增的审计记录来自真实演示与人工复核测试。
+- 产物：`backend/app/tui/`、`backend/pyproject.toml`、
+  `backend/tests/test_tui_{client,app,status_cli,integration_real}.py`、
+  `scripts/{start_api,start_tui,check_system}.sh`、`scripts/demo_phase5.py`、
+  [TUI 设计](tui_design.md)、[部署说明](deployment.md)、[演示指南](demo_guide.md)、
+  [Phase 5 报告](phase5_report.md)、`docs/figures/phase5/`。
+- 未解决：无流式输出（后端无流式事件）；取消不终止服务端任务（无取消接口）；
+  「最近审计」下拉只含已入审计库的 trace；主库迁移仍待批准；
+  接口无完整认证，只允许本机/隔离环境演示。
 
 ## 阶段依赖
 
 阶段 1 提供数据和存储基础，阶段 2 提供可评估的知识证据与检索/问答接口，阶段 3 消费两类工具，
-阶段 4 消费阶段 3 的轨迹，阶段 5 完成全链路交付。阶段 2、3、4 已完成开发与自测
-（阶段 2 未做独立验收）；阶段 5 尚未启动。各阶段先确定契约，模块可用模拟输入独立测试；
+阶段 4 消费阶段 3 的轨迹，阶段 5 完成全链路交付。阶段 2、3、4、5 已完成开发与自测
+（阶段 2 未做独立验收）。各阶段先确定契约，模块可用模拟输入独立测试；
 不因并行开发省略来源核验与评估验收。

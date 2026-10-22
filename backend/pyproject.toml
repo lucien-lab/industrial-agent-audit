@@ -1,0 +1,36 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+# 仅用于安装终端入口 `iaa-tui`（`pip install -e backend`）。
+# 本项目不是要发布到 PyPI 的通用库，所以没有把包的元数据写得多复杂。
+[project]
+name = "industrial-agent-audit"
+version = "5.0.0"
+description = "工业设备智能运维 Agent：工业数据查询 + RAG + LangGraph Agent + Agent-Probe 审计 + Textual TUI"
+requires-python = ">=3.11"
+dependencies = [
+    "fastapi>=0.110",
+    "uvicorn>=0.29",
+    "sqlalchemy>=2.0",
+    "psycopg>=3.1",
+    "pgvector>=0.2",
+    "alembic>=1.13",
+    "httpx>=0.27",
+    "pydantic>=2.6",
+    "langgraph>=1.0",
+    "rich>=13.7",
+    "textual>=1.0,<2.0",
+    "pymupdf>=1.24",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8", "pytest-cov>=5"]
+
+[project.scripts]
+iaa-tui = "app.tui.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["app*"]
+namespaces = false

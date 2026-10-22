@@ -2,13 +2,14 @@
 
 ## 范围与边界
 
-本文件描述目标架构。截至阶段 4，**存储层、数据服务、只读查询 API、知识库与 RAG 检索问答、
-LangGraph 单 Agent 与只读工具、最小执行 Trace、以及 Agent-Probe 行为审计已实现**：
+本文件描述目标架构。截至阶段 5，**存储层、数据服务、只读查询 API、知识库与 RAG 检索问答、
+LangGraph 单 Agent 与只读工具、最小执行 Trace、Agent-Probe 行为审计、以及终端交互界面（Textual TUI）已实现**：
 `backend/app/models/` 的 ORM 模型、`backend/alembic/` 的迁移、`backend/app/services/` 的
 导入/查询/知识服务、`backend/app/rag/` 的解析/切分/Embedding/混合检索/问答、
 `backend/app/api/` 的 FastAPI 接口、`backend/app/audit/` 的规范化/规则/Judge/混合审计/持久化、
-以及 PostgreSQL + pgvector 的 Compose 部署；前端（阶段 5）仍未实现。初期采用模块化单体：
-一个 FastAPI 后端、一套 React 前端和 PostgreSQL 数据库。Agent-Probe 是本项目的
+`backend/app/tui/` 的终端界面，以及 PostgreSQL + pgvector 的 Compose 部署。
+**本项目不使用 React / Vue 等 Web 前端**（阶段 5 明确改为终端 TUI），初期仍是模块化单体：
+一个 FastAPI 后端、一个 Textual 终端客户端和 PostgreSQL 数据库。Agent-Probe 是本项目的
 行为追踪与审计模块名称（Observability + Audit），不是运行时拦截器，也未接入同名外部产品。
 
 已实现的调用边界（阶段 1B/1C/2）：
@@ -30,6 +31,7 @@ LangGraph 单 Agent 与只读工具、最小执行 Trace、以及 Agent-Probe �
 | Agent Trace | `backend/app/agent/trace.py`、`app/agent/evidence_manifest.py` | 结构化事件 + 有界证据清单（`evidence` 事件），不含敏感信息 |
 | Agent-Probe 审计 | `backend/app/audit/`、`app/models/audit.py`、`app/api/routes/audit.py` | Trace 规范化、11 条确定性规则、LLM Judge、混合审计、回放、独立审计库与 API |
 | Agent 接口与配置 | `backend/app/api/routes/agent.py`、`app/schemas/agent.py`、`app/agent/{service,config,context}.py` | `POST /api/v1/agent/chat`、`GET /api/v1/agent/traces/{id}`；预算配置与只读会话 |
+| TUI（终端界面） | `backend/app/tui/` | Textual 应用：统一 API Client、6 个功能页面、系统状态聚合、CLI 入口 |
 
 Agent 负责完成业务问题；Agent-Probe 负责观察执行过程并评估合规性与证据质量。审计通过不代表设备安全认证，也不等同于答案必然正确。
 
@@ -37,7 +39,7 @@ Agent 负责完成业务问题；Agent-Probe 负责观察执行过程并评估�
 
 ```mermaid
 flowchart TB
-    UI[前端展示层：设备趋势、问答、轨迹与审计]
+    UI[TUI 客户端：Textual 终端界面\nAgent Chat / Equipment / Knowledge / Trace / Audit / Status]
     API[FastAPI 服务层：校验、鉴权与请求分发]
     AG[Agent：LangGraph 决策与工具编排]
     RAG[RAG：知识入库、检索与引用]
@@ -45,7 +47,7 @@ flowchart TB
     PROBE[Agent-Probe：轨迹采集、规则与模型审计]
     AI[外部模型：生成、Embedding、评审]
     PG[(PostgreSQL 与 pgvector)]
-    UI --> API
+    UI -->|仅 HTTP，不直连数据库| API
     API --> AG
     API --> DATA
     API --> RAG
@@ -65,7 +67,7 @@ flowchart TB
 
 | 模块 | 输入 | 输出 | 职责与依赖 |
 | --- | --- | --- | --- |
-| 前端 | 用户问题、设备选择、时间范围 | 查询请求、趋势与审计视图 | 仅调用 API，不直连数据库或持有模型密钥 |
+| 前端 | 用户问题、设备选择、时间范围 | 查询请求、趋势与审计视图 | 仅调用 API，不直连数据库或持有模型密钥（阶段 5：Textual 终端客户端 `backend/app/tui/`） |
 | API | HTTP 请求与身份上下文 | 结构化响应、请求标识或错误 | 参数校验、授权、分发；不承载检索与审计算法 |
 | 工业数据服务 | 设备标识、时间窗口、指标与聚合要求 | 带单位、来源、时间边界的数据 | 通过 ORM 与数据库会话查询；限制范围和返回量 |
 | RAG（已实现） | 查询文本、适用设备范围；入库时为知识文档 | 文档片段、相关性分值、引用与适用性 | 负责解析、切分、向量化与检索，依赖 Embedding 和 pgvector；不执行文档中的指令 |
@@ -185,12 +187,38 @@ JSONL Trace / 内存 TraceStore
 
 细节见 [审计设计](audit_design.md)、[审计规则](audit_rules.md)、[审计评估](audit_evaluation.md)。
 
+## TUI 实现（阶段 5）
+
+```
+Textual App（app/tui/app.py）
+  ├─ 状态栏（真实探测：API / 工业库 / RAG / Audit / LLM）
+  ├─ 侧边导航 + ContentSwitcher（6 个页面）
+  └─ 状态行 + Footer（快捷键）
+        │
+        └─ Page（每个页面一个 Worker 组）
+              └─ IaaApiClient（httpx.AsyncClient，唯一网络出口）
+                    └─ FastAPI /api/v1/*（只读 + 审计写接口）
+```
+
+关键边界：
+
+- **只走 HTTP**：TUI 不 import 数据库驱动、不持有连接串；有静态测试守卫这一点。
+- **不重实现业务**：Agent / RAG / Audit 逻辑仍在后端，TUI 只负责渲染与交互。
+- **不强装健康**：`/ready` 的 `schema_ok=false` → 状态栏与状态页显示 `degraded`；
+  LLM / Embedding 未做深度探测时显示「未探测」。
+- **不伪造过程**：后端无流式接口，工具调用在回答返回后按真实响应展示；
+  取消界面等待时会明确说明服务端任务未被取消。
+- **不改数据**：唯一写接口是人工复核 `PATCH /audit/findings/{id}/review`，
+  且只改复核状态；启动/刷新从不迁移数据库或重建索引。
+
+细节见 [TUI 设计](tui_design.md)、[部署说明](deployment.md)、[演示指南](demo_guide.md)。
+
 ## 主要业务数据流
 
 ```mermaid
 sequenceDiagram
     actor U as 用户
-    participant F as 前端
+    participant F as TUI（Textual）
     participant A as API
     participant G as Agent
     participant T as 数据与RAG工具
@@ -237,6 +265,8 @@ sequenceDiagram
 
 ## 可测试性与独立开发
 
-先约定查询、检索、工具结果、轨迹事件、审计输出的结构，再分模块实现。通过模型替身验证业务与审计逻辑，通过 PostgreSQL/pgvector 集成测试验证存储语义。RAG 用带相关片段标注的问题集，审计用人工标注轨迹；与开发调试样本隔离。前端可基于明确标为模拟的契约样例开发。
+先约定查询、检索、工具结果、轨迹事件、审计输出的结构，再分模块实现。通过模型替身验证业务与审计逻辑，通过 PostgreSQL/pgvector 集成测试验证存储语义。RAG 用带相关片段标注的问题集，审计用人工标注轨迹；与开发调试样本隔离。
+阶段 5 的 TUI 用 Textual 自带的 headless 驱动（`App.run_test`）加 httpx `MockTransport` 做界面单测，
+再用真实后端跑端到端（`IAA_TUI_E2E=1`）；界面单测通过不等于真实链路可用，两者都在 CI 入口中。
 
 模型超时、无检索结果、设备不匹配、空数据窗口、轨迹缺失和评审失败均作为独立测试场景。保留期限、访问权限细则、调用预算和性能目标待验证后确定。

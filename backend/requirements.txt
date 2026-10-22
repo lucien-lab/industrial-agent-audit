@@ -29,3 +29,9 @@ pgvector==0.4.2        # SQLAlchemy 的 vector 类型（服务端 pgvector 0.8.7
 # 阶段 3：LangGraph Agent（单 Agent + 多工具）
 # 优先 conda：conda install -n ms_pointcloud_midterm -c conda-forge langgraph
 langgraph==1.2.2       # StateGraph 工作流（附带 langchain-core 1.6.x / langgraph-checkpoint 4.3.0）
+
+# 阶段 5：Textual 终端界面（TUI）
+# 优先 conda：conda install -n ms_pointcloud_midterm -c conda-forge textual
+textual==1.0.0         # TUI 框架（rich 15.0.0 已在上方依赖链中）
+pytest-asyncio==1.4.0  # TUI 异步测试（Textual run_test / httpx AsyncClient）
+

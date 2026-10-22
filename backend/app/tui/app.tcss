@@ -1,0 +1,307 @@
+/* 工业智能运维 Agent TUI 样式（Textual CSS）
+   目标：深色、简洁、信息密度高；小终端可用（120x36 起步，窗口更小时靠滚动）。 */
+
+Screen {
+    background: $background;
+    color: $text;
+}
+
+/* ---------------- 顶部系统状态栏 ---------------- */
+#status-bar {
+    height: 3;
+    background: $panel;
+    border-bottom: solid $primary-darken-2;
+    padding: 0 1;
+}
+
+#status-bar-brand {
+    height: 1;
+    color: $text;
+    text-style: bold;
+}
+
+#status-bar-states {
+    height: 2;
+    color: $text-muted;
+}
+
+/* ---------------- 主体 ---------------- */
+#body {
+    height: 1fr;
+}
+
+#sidebar {
+    width: 24;
+    min-width: 20;
+    background: $panel-darken-1;
+    border-right: solid $primary-darken-2;
+    padding: 0;
+}
+
+#nav-title {
+    height: 1;
+    padding: 0 1;
+    color: $text-muted;
+    text-style: bold;
+    background: $panel-darken-1;
+}
+
+#nav {
+    height: auto;
+    max-height: 12;
+    background: $panel-darken-1;
+}
+
+#nav > ListItem {
+    padding: 0 1;
+    height: 1;
+}
+
+#nav > ListItem.--highlight {
+    background: $primary 40%;
+    color: $text;
+}
+
+#sidebar-hint {
+    padding: 1 1 0 1;
+    color: $text-muted;
+    height: auto;
+}
+
+#page-container {
+    width: 1fr;
+    height: 1fr;
+    padding: 0 1;
+}
+
+/* ---------------- 通用块 ---------------- */
+Page, BasePage {
+    height: 1fr;
+}
+
+.page-header {
+    height: auto;
+    color: $text;
+    text-style: bold;
+    padding: 1 0 0 0;
+}
+
+.page-hint {
+    height: auto;
+    color: $text-muted;
+    padding: 0 0 1 0;
+}
+
+.section-title {
+    color: $accent;
+    text-style: bold;
+    height: 1;
+    padding: 1 0 0 0;
+}
+
+.message {
+    height: auto;
+    min-height: 1;
+    padding: 0 1;
+    color: $text-muted;
+}
+
+.message-error {
+    color: $error;
+}
+
+.message-warn {
+    color: $warning;
+}
+
+.message-ok {
+    color: $success;
+}
+
+.controls {
+    height: auto;
+    padding: 0 0 1 0;
+}
+
+.controls > Input {
+    width: 24;
+    margin: 0 1 0 0;
+}
+
+.controls > Select {
+    width: 26;
+    margin: 0 1 0 0;
+}
+
+.controls > Button {
+    margin: 0 1 0 0;
+    min-width: 12;
+}
+
+.field-label {
+    color: $text-muted;
+    height: 1;
+    padding: 0 1 0 0;
+}
+
+/* ---------------- Chat ---------------- */
+#chat-log {
+    height: 1fr;
+    border: round $primary-darken-2;
+    padding: 0 1;
+    background: $surface;
+}
+
+.chat-user {
+    height: auto;
+    padding: 1 1 0 1;
+    color: $accent;
+    text-style: bold;
+}
+
+.chat-agent {
+    height: auto;
+    padding: 0 1 1 1;
+}
+
+.chat-answer {
+    height: auto;
+    padding: 0 1 0 1;
+}
+
+.chat-tools {
+    height: auto;
+    padding: 0 1 1 1;
+    color: $text-muted;
+}
+
+.chat-meta {
+    height: auto;
+    padding: 0 1 1 1;
+    color: $text-muted;
+}
+
+#chat-input {
+    height: 5;
+    border: round $primary-darken-2;
+}
+
+#chat-input:focus {
+    border: round $accent;
+}
+
+.chat-actions {
+    height: auto;
+    padding: 1 0 0 0;
+}
+
+/* ---------------- 表格与详情 ---------------- */
+DataTable {
+    height: 1fr;
+    min-height: 4;
+    background: $surface;
+}
+
+.compact-table {
+    height: 12;
+    min-height: 6;
+}
+
+Horizontal > .split-left {
+    width: 40%;
+    min-width: 28;
+    height: 1fr;
+}
+
+Horizontal > .split-right {
+    width: 1fr;
+    height: 1fr;
+    border-left: solid $primary-darken-2;
+    padding: 0 1;
+}
+
+.detail-pane {
+    height: 1fr;
+    background: $surface;
+}
+
+.detail-pane Markdown {
+    height: auto;
+}
+
+.scroll-detail {
+    height: 1fr;
+    background: $surface;
+    padding: 0 1;
+}
+
+#equipment-chart {
+    height: auto;
+    padding: 1 0;
+    color: $accent;
+}
+
+#audit-summary, #trace-meta, #knowledge-detail, #audit-detail {
+    height: auto;
+    min-height: 2;
+    padding: 0 0 1 0;
+}
+
+#audit-progress {
+    height: 1;
+    color: $accent;
+}
+
+/* ---------------- 底部状态行与快捷键 ---------------- */
+#status-line {
+    height: 1;
+    background: $panel;
+    color: $text-muted;
+    padding: 0 1;
+}
+
+Footer {
+    background: $panel-darken-1;
+}
+
+/* ---------------- 弹窗 ---------------- */
+ModalScreen {
+    align: center middle;
+    background: $background 60%;
+}
+
+.dialog {
+    width: 72;
+    max-width: 96%;
+    height: auto;
+    max-height: 90%;
+    border: thick $accent;
+    background: $surface;
+    padding: 1 2;
+}
+
+.dialog-title {
+    height: 1;
+    text-style: bold;
+    color: $accent;
+}
+
+#quick-switch-list {
+    height: auto;
+    max-height: 12;
+    margin: 1 0;
+}
+
+.dialog-buttons {
+    height: auto;
+    padding: 1 0 0 0;
+}
+
+.dialog-buttons > Button {
+    margin-right: 2;
+}
+
+#help-body {
+    height: auto;
+    max-height: 24;
+}
