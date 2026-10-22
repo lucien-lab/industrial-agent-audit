@@ -15,8 +15,12 @@ from __future__ import annotations
 import os
 from dataclasses import dataclass
 from pathlib import Path
+from urllib.parse import urlparse
 
 from app.core.config import PROJECT_ROOT, load_env_file
+
+# 本地模型服务（Ollama）的主机：这些主机绝不能走系统/环境代理。
+_LOOPBACK_HOSTS = {"127.0.0.1", "localhost", "::1", "0.0.0.0"}
 
 EQUIPMENT_SCOPES = (
     # 与 MetroPT-3 数据集直接关联（数据集自带说明、围绕该数据集的论文）
@@ -124,6 +128,36 @@ def _env_float(name: str, default: float) -> float:
         raise ValueError(f"{name} 必须是数字，当前为 {raw!r}") from exc
 
 
+def ensure_loopback_no_proxy(*urls: str) -> list[str]:
+    """把配置中的本地模型服务主机加入 `NO_PROXY`（幂等）。
+
+    背景：本项目的 Embedding / LLM 默认是**本机** Ollama。若开发机打开了系统级 HTTP 代理
+    （httpx 会通过 `urllib.request.getproxies()` 读到），发往 `127.0.0.1:11434` 的请求
+    会被代理接管并返回 502。这里只把 loopback 主机写入 `NO_PROXY`，不影响对外部 API 的代理设置。
+
+    返回本次新增的主机列表（便于测试断言）。
+    """
+    hosts: list[str] = []
+    for url in urls:
+        host = urlparse(url).hostname if url else None
+        if host in _LOOPBACK_HOSTS and host not in hosts:
+            hosts.append(host)
+    if not hosts:
+        return []
+    current = os.environ.get("NO_PROXY") or os.environ.get("no_proxy") or ""
+    entries = [part.strip() for part in current.split(",") if part.strip()]
+    added: list[str] = []
+    for host in hosts:
+        if host not in entries:
+            entries.append(host)
+            added.append(host)
+    if added:
+        value = ",".join(entries)
+        os.environ["NO_PROXY"] = value
+        os.environ["no_proxy"] = value
+    return added
+
+
 def get_rag_settings(env_file: Path | str | None = None) -> RAGSettings:
     """读取 RAG 配置。缺失知识库连接串时回退到 `DATABASE_URL`。"""
     load_env_file(env_file)
@@ -146,11 +180,16 @@ def get_rag_settings(env_file: Path | str | None = None) -> RAGSettings:
             f"CHUNKING_STRATEGY 必须是 {CHUNKING_STRATEGIES} 之一，当前为 {strategy!r}"
         )
 
+    embedding_base_url = _env("EMBEDDING_BASE_URL", "http://127.0.0.1:11434").rstrip("/")
+    llm_base_url = _env("LLM_BASE_URL", "http://127.0.0.1:11434").rstrip("/")
+    # 本地模型服务不走代理（见 ensure_loopback_no_proxy）
+    ensure_loopback_no_proxy(embedding_base_url, llm_base_url)
+
     return RAGSettings(
         database_url=database_url,
         knowledge_root=knowledge_root,
         embedding_provider=_env("EMBEDDING_PROVIDER", "ollama").lower(),
-        embedding_base_url=_env("EMBEDDING_BASE_URL", "http://127.0.0.1:11434").rstrip("/"),
+        embedding_base_url=embedding_base_url,
         embedding_model=_env("EMBEDDING_MODEL", "bge-m3"),
         embedding_dim=_env_int("EMBEDDING_DIM", 1024),
         embedding_version=_env("EMBEDDING_VERSION", "bge-m3-1024-v1"),
@@ -158,7 +197,7 @@ def get_rag_settings(env_file: Path | str | None = None) -> RAGSettings:
         embedding_timeout_s=_env_float("EMBEDDING_TIMEOUT_S", 120.0),
         embedding_max_retries=_env_int("EMBEDDING_MAX_RETRIES", 3),
         llm_provider=_env("LLM_PROVIDER", "ollama").lower(),
-        llm_base_url=_env("LLM_BASE_URL", "http://127.0.0.1:11434").rstrip("/"),
+        llm_base_url=llm_base_url,
         llm_model=_env("LLM_MODEL", "qwen2.5:7b-instruct"),
         llm_timeout_s=_env_float("LLM_TIMEOUT_S", 180.0),
         llm_max_retries=_env_int("LLM_MAX_RETRIES", 2),

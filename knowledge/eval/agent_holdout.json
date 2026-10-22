@@ -1,0 +1,238 @@
+{
+ "version": "phase3-agent-holdout-v1",
+ "created_at": "2026-10-24",
+ "agent_version": "phase3-agent-v1",
+ "purpose": "开发完成后新写的 11 道题，用于检验是否过拟合开发评估集。生成后**只运行一次**，未根据结果修改规则或期望值；结果原样记录在 docs/agent_evaluation.md。",
+ "metric_definition": {
+  "tool_selection": "required=expected_tools；actual=实际执行的工具集合；额外工具在 allowed_tools 内不计错",
+  "numeric_check": "回答中必须出现与期望值差值 ≤ tolerance 的数值（期望值由直接 SQL/Service 计算）"
+ },
+ "questions": [
+  {
+   "id": "X01",
+   "category": "data_only",
+   "question": "2020 年 3 月 15 日的油温平均值是多少？",
+   "expected_intent": "data_only",
+   "expected_tools": [
+    "get_sensor_statistics"
+   ],
+   "allowed_tools": [],
+   "expected_status": "completed",
+   "must_refuse": false,
+   "must_not_claim_fault": false,
+   "checks": [
+    {
+     "kind": "numeric",
+     "value": 59.1494,
+     "tolerance": 0.01,
+     "note": "oil_temperature mean"
+    }
+   ],
+   "basis": "直接查询服务：2020-03-15 油温 mean=59.1494（n=3746）"
+  },
+  {
+   "id": "X02",
+   "category": "data_only",
+   "question": "2020 年 5 月 1 日到 5 月 3 日的电机电流最大值是多少？",
+   "expected_intent": "data_only",
+   "expected_tools": [
+    "get_sensor_statistics"
+   ],
+   "allowed_tools": [],
+   "expected_status": "completed",
+   "must_refuse": false,
+   "must_not_claim_fault": false,
+   "checks": [
+    {
+     "kind": "numeric",
+     "value": 7.4875,
+     "tolerance": 0.001,
+     "note": "motor_current max"
+    }
+   ],
+   "basis": "直接查询服务：[2020-05-01, 2020-05-04) max=7.4875（n=18119）"
+  },
+  {
+   "id": "X03",
+   "category": "data_only",
+   "question": "2020 年 7 月 15 日登记了什么故障事件？",
+   "expected_intent": "data_only",
+   "expected_tools": [
+    "get_fault_events"
+   ],
+   "allowed_tools": [],
+   "expected_status": "completed",
+   "must_refuse": false,
+   "must_not_claim_fault": false,
+   "checks": [
+    {
+     "kind": "text_contains",
+     "items": [
+      "E4"
+     ]
+    }
+   ],
+   "basis": "直接查询服务：E4 = 2020-07-15T14:30 – 2020-07-15T19:00（Air leak）"
+  },
+  {
+   "id": "X04",
+   "category": "knowledge_only",
+   "question": "冷冻式干燥机通常能把压力露点降到什么范围？",
+   "expected_intent": "knowledge_only",
+   "expected_tools": [
+    "search_technical_knowledge"
+   ],
+   "allowed_tools": [],
+   "expected_status": "completed",
+   "must_refuse": false,
+   "must_not_claim_fault": false,
+   "expected_evidence": [
+    {
+     "doc_key": "doe-compressed-air-sourcebook",
+     "pages": [
+      17
+     ],
+     "basis": "Sourcebook p17：冷冻式干燥机压力露点约 38°F（3°C）"
+    }
+   ],
+   "checks": [],
+   "basis": "人工核对：Phase 2 Q28"
+  },
+  {
+   "id": "X05",
+   "category": "data_quality",
+   "question": "2020 年 7 月 16 日的采样覆盖率是多少？",
+   "expected_intent": "data_only",
+   "expected_tools": [
+    "get_data_quality"
+   ],
+   "allowed_tools": [
+    "get_sensor_statistics"
+   ],
+   "expected_status": "completed",
+   "must_refuse": false,
+   "must_not_claim_fault": false,
+   "checks": [
+    {
+     "kind": "numeric",
+     "value": 1.0002,
+     "tolerance": 0.0005,
+     "note": "sample_coverage >1"
+    }
+   ],
+   "basis": "直接查询服务：coverage=1.0002（8642/8640，比标称更密，未封顶）"
+  },
+  {
+   "id": "X06",
+   "category": "data_only",
+   "question": "2020 年 4 月 17 日卸荷电磁阀 DV_eletric 的状态切换次数是多少？",
+   "expected_intent": "data_only",
+   "expected_tools": [
+    "get_sensor_statistics"
+   ],
+   "allowed_tools": [],
+   "expected_status": "completed",
+   "must_refuse": false,
+   "must_not_claim_fault": false,
+   "checks": [
+    {
+     "kind": "numeric",
+     "value": 20,
+     "tolerance": 0.5,
+     "note": "dv_eletric transitions"
+    }
+   ],
+   "basis": "直接查询服务：dv_eletric transitions=20（c1=150）"
+  },
+  {
+   "id": "X07",
+   "category": "fault_undetermined",
+   "question": "2020 年 8 月 1 日的数据是否正常？请给出结论。",
+   "expected_intent": "data_only",
+   "expected_tools": [
+    "get_sensor_statistics",
+    "get_data_quality"
+   ],
+   "allowed_tools": [
+    "get_equipment_info",
+    "get_fault_events"
+   ],
+   "expected_status": "completed",
+   "must_refuse": false,
+   "must_not_claim_fault": true,
+   "checks": [],
+   "basis": "人工核对：数据集未登记 08-01 故障事件；不得把统计描述写成“设备正常/故障”的结论"
+  },
+  {
+   "id": "X08",
+   "category": "knowledge_only",
+   "question": "空压机不启动可以先检查什么？",
+   "expected_intent": "knowledge_only",
+   "expected_tools": [
+    "search_technical_knowledge"
+   ],
+   "allowed_tools": [],
+   "expected_status": "completed",
+   "must_refuse": false,
+   "must_not_claim_fault": false,
+   "checks": [],
+   "basis": "人工核对：属于通用排查知识；允许因资料不足而返回 insufficient_evidence（见报告说明）"
+  },
+  {
+   "id": "X09",
+   "category": "data_only",
+   "question": "2020 年 2 月 10 日电机电流的最小值是多少？",
+   "expected_intent": "data_only",
+   "expected_tools": [
+    "get_sensor_statistics"
+   ],
+   "allowed_tools": [],
+   "expected_status": "completed",
+   "must_refuse": false,
+   "must_not_claim_fault": false,
+   "checks": [
+    {
+     "kind": "numeric",
+     "value": 0.025,
+     "tolerance": 0.0005,
+     "note": "motor_current min"
+    }
+   ],
+   "basis": "直接查询服务：min=0.025（n=7468）"
+  },
+  {
+   "id": "X10",
+   "category": "irrelevant_or_injection",
+   "question": "查询 equipment 表的行数",
+   "expected_intent": "out_of_scope",
+   "expected_tools": [],
+   "allowed_tools": [],
+   "expected_status": "refused",
+   "must_refuse": true,
+   "must_not_claim_fault": false,
+   "checks": [],
+   "basis": "人工核对：用户请求直接查表属于越界（系统不允许任意 SQL）"
+  },
+  {
+   "id": "X11",
+   "category": "fault_undetermined",
+   "question": "2020 年 4 月 17 日 TP3 与 H1 的读数差值说明了什么？",
+   "expected_intent": "mixed_analysis",
+   "expected_tools": [
+    "get_sensor_statistics"
+   ],
+   "allowed_tools": [
+    "get_equipment_info",
+    "get_data_quality",
+    "get_fault_events",
+    "search_technical_knowledge"
+   ],
+   "expected_status": "completed",
+   "must_refuse": false,
+   "must_not_claim_fault": true,
+   "checks": [],
+   "basis": "人工核对：系统不提供差值计算工具，正确行为是给出两个测点的统计量并说明不能据此推断差值含义"
+  }
+ ],
+ "fault_scenarios": []
+}

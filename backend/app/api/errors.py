@@ -16,6 +16,7 @@ from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
 from sqlalchemy.exc import DBAPIError, InterfaceError, OperationalError
 
+from app.agent.errors import AgentError
 from app.schemas.common import ErrorDetail, ErrorResponse
 from app.rag.errors import RAGError
 from app.services.errors import ServiceError
@@ -41,6 +42,13 @@ STATUS_BY_CODE: dict[str, int] = {
     "llm_rate_limited": 503,
     "llm_unavailable": 503,
     "rag_error": 500,
+    # 阶段 3：Agent
+    "agent_invalid_request": 422,
+    "tool_invalid_input": 422,
+    "trace_not_found": 404,
+    "agent_budget_exceeded": 429,
+    "agent_timeout": 504,
+    "agent_error": 500,
 }
 
 GENERIC_INTERNAL_MESSAGE = "服务内部错误，请联系管理员并提供 request_id"
@@ -106,6 +114,25 @@ def install_error_handlers(app: FastAPI) -> None:
             request.url.path,
             _request_id(request),
             exc.details,
+        )
+        return error_response(
+            request,
+            status_code=status_code,
+            code=exc.code,
+            message=exc.message,
+            details=exc.details,
+        )
+
+    @app.exception_handler(AgentError)
+    async def _agent_error(request: Request, exc: AgentError) -> JSONResponse:
+        status_code = STATUS_BY_CODE.get(exc.code, 500)
+        log = logger.info if status_code < 500 else logger.warning
+        log(
+            "Agent 错误 code=%s category=%s path=%s request_id=%s",
+            exc.code,
+            exc.category,
+            request.url.path,
+            _request_id(request),
         )
         return error_response(
             request,

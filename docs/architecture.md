@@ -2,11 +2,12 @@
 
 ## 范围与边界
 
-本文件描述目标架构。截至阶段 2，**存储层、数据服务、只读查询 API、知识库与 RAG 检索问答已实现**：
+本文件描述目标架构。截至阶段 3，**存储层、数据服务、只读查询 API、知识库与 RAG 检索问答、
+LangGraph 单 Agent 与只读工具、最小执行 Trace 已实现**：
 `backend/app/models/` 的 ORM 模型、`backend/alembic/` 的迁移、`backend/app/services/` 的
 导入/查询/知识服务、`backend/app/rag/` 的解析/切分/Embedding/混合检索/问答、
 `backend/app/api/` 的 FastAPI 接口、以及 PostgreSQL + pgvector 的 Compose 部署；
-Agent、Agent-Probe、前端仍未实现。初期采用模块化单体：一个 FastAPI 后端、
+Agent-Probe（阶段 4）与前端（阶段 5）仍未实现。初期采用模块化单体：一个 FastAPI 后端、
 一套 React 前端和 PostgreSQL 数据库。Agent-Probe 是本项目的行为追踪与审计模块名称，
 尚未选定或接入同名外部产品。
 
@@ -23,6 +24,11 @@ Agent、Agent-Probe、前端仍未实现。初期采用模块化单体：一个 
 | 知识检索 | `backend/app/rag/retrieval/` | 向量、关键词与 RRF 混合检索，来源/页码/适用范围过滤 |
 | RAG 问答 | `backend/app/rag/answer.py` | 证据选择、Prompt、引用逐字校验、越界与注入防护 |
 | 知识接口 | `backend/app/api/routes/knowledge.py`、`app/services/knowledge.py` | 检索/问答/文档/健康检查，只读 |
+| Agent 工作流 | `backend/app/agent/{graph,nodes,state,intent,planner_llm}.py` | LangGraph 单 Agent：意图 → 规划 → 执行 → 检查 → 证据整合 → 结束，带预算与超时 |
+| Agent 工具 | `backend/app/agent/tools/` | 6 个只读工具（5 数据 + 1 知识检索），Pydantic 校验、超时、有限重试 |
+| Agent 证据与回答 | `backend/app/agent/{evidence,answer}.py` | 事实清单（D 标签）、知识片段（K 标签）、数值接地、引用逐字校验 |
+| Agent Trace | `backend/app/agent/trace.py` | 结构化事件（最小契约，供阶段 4 消费），不含敏感信息 |
+| Agent 接口与配置 | `backend/app/api/routes/agent.py`、`app/schemas/agent.py`、`app/agent/{service,config,context}.py` | `POST /api/v1/agent/chat`、`GET /api/v1/agent/traces/{id}`；预算配置与只读会话 |
 
 Agent 负责完成业务问题；Agent-Probe 负责观察执行过程并评估合规性与证据质量。审计通过不代表设备安全认证，也不等同于答案必然正确。
 
@@ -62,7 +68,7 @@ flowchart TB
 | API | HTTP 请求与身份上下文 | 结构化响应、请求标识或错误 | 参数校验、授权、分发；不承载检索与审计算法 |
 | 工业数据服务 | 设备标识、时间窗口、指标与聚合要求 | 带单位、来源、时间边界的数据 | 通过 ORM 与数据库会话查询；限制范围和返回量 |
 | RAG（已实现） | 查询文本、适用设备范围；入库时为知识文档 | 文档片段、相关性分值、引用与适用性 | 负责解析、切分、向量化与检索，依赖 Embedding 和 pgvector；不执行文档中的指令 |
-| Agent | 问题、上下文、工具契约 | 回答、引用、执行状态与轨迹标识 | LangGraph 编排；调用数据/RAG 工具，不实现底层查询 |
+| Agent（已实现） | 问题、上下文、工具契约 | 回答、引用、执行状态与轨迹标识 | LangGraph 编排；调用数据/RAG 工具，不实现底层查询；数值与引用受接地校验约束 |
 | Agent-Probe | 结构化事件、证据快照与策略版本 | 规则命中、模型评审、证据定位与评审状态 | 独立读取轨迹与证据，不替 Agent 决策或修补回答 |
 | 存储层 | 受约束的读写请求 | 实体、时序、片段向量与审计记录 | PostgreSQL 管理一致性，pgvector 管理向量检索 |
 
@@ -125,6 +131,32 @@ PDF（sources.json 登记 URL/SHA-256/许可/适用范围）
 
 细节与实测指标见 [RAG 设计](rag_design.md) 与 [RAG 评估](rag_evaluation.md)。
 
+## Agent 实现（阶段 3）
+
+```
+问题 → analyze（意图 + 槽位）→ plan（工具计划 + 预算裁剪）
+     → execute（一个工具：校验 → 超时 → 有限重试 → 结构化结果）
+     → check（异常判断补对照窗口 / 空结果补质量查询 / 检索为空换关键词；预算与轮次检查）
+     → compose（事实清单 D#/K# → LLM 叙述或确定性渲染 → 数值接地 + 引用逐字校验）
+     → finalize（终态 + Trace 摘要）
+```
+
+关键边界：
+
+- **单 Agent + 多工具**：不做多 Agent 协作；复杂问题用“计划 + 补充查询”解决。
+- **工具只读**：数据工具复用阶段 1C Service，知识工具复用阶段 2 混合检索（不调用 RAG 生成）；
+  Agent 代码中没有 SQL；会话连接参数 `default_transaction_read_only=on`。
+- **数值与引用接地**：数据小节由事实清单确定性渲染；模型只能写结论句/知识要点/推断；
+  回答中的数字必须命中事实清单（含知识原文与用户问题中的数字），
+  知识结论必须带逐字摘录，否则丢弃并记录原因。
+- **预算显式**：工具调用 ≤ 8、决策轮次 ≤ 5、节点步数 ≤ 24、整轮 ≤ 180 s，每个工具独立超时；
+  错误按类别决定是否重试、是否阻断依赖工具。
+- **位置独立的数据源**：工业数据用 `DATABASE_URL`、知识用 `RAG_DATABASE_URL`，
+  不假设同库（当前主库 `0004`、知识库 `0007`）。
+- **Trace 与审计分离**：本阶段只产出结构化事件（阶段 4 消费），不做风险评分或 LLM 审计。
+
+细节见 [Agent 设计](agent_design.md)、[工具契约](agent_tools.md)、[Agent 评估](agent_evaluation.md)。
+
 ## 主要业务数据流
 
 ```mermaid
@@ -139,8 +171,8 @@ sequenceDiagram
     U->>F: 提问并指定设备及时间范围
     F->>A: 提交请求
     A->>G: 已校验的任务与请求标识
-    G->>P: 任务开始事件
-    P->>D: 追加轨迹
+    G->>P: 任务开始事件（阶段 3：Trace 事件，进程内 + JSONL）
+    P->>D: 追加轨迹（阶段 4：持久化待审计状态）
     loop 在步数与时间预算内
         G->>P: 工具调用开始事件
         G->>T: 结构化参数

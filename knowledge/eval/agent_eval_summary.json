@@ -1,0 +1,185 @@
+{
+ "questions": 51,
+ "questions_executed": 50,
+ "questions_rejected_at_entry": 1,
+ "tool_selection": {
+  "exact_match_rate": 1.0,
+  "precision": 1.0,
+  "recall": 1.0,
+  "extra_tool_cases": [],
+  "missing_tool_cases": []
+ },
+ "tool_execution": {
+  "total_calls": 91,
+  "success_rate": 0.956,
+  "error_rate": 0.044,
+  "empty_result_rate": 0.1319,
+  "error_categories": {
+   "not_found": 2,
+   "invalid_input": 2
+  }
+ },
+ "numeric_accuracy": {
+  "numeric_checks": 23,
+  "passed": 23,
+  "rate": 1.0,
+  "text_checks": 6,
+  "text_passed": 6,
+  "text_rate": 1.0
+ },
+ "citation_accuracy": {
+  "knowledge_answer_runs": 21,
+  "evidence_requirement_rate": 0.9,
+  "evidence_requirements": 10,
+  "citation_verbatim_rate": 1.0,
+  "problem_cases": []
+ },
+ "unsupported_conclusions": {
+  "cases": 0,
+  "rate": 0.0,
+  "ids": []
+ },
+ "efficiency": {
+  "avg_tool_calls_per_question": 1.78,
+  "avg_duration_ms": 3874.18,
+  "max_duration_ms": 11282.63
+ },
+ "status_match_rate": 1.0,
+ "by_category": {
+  "knowledge_only": {
+   "count": 10,
+   "tool_exact_rate": 1.0,
+   "status_match_rate": 1.0,
+   "avg_tool_calls": 1.0,
+   "avg_duration_ms": 6522.81,
+   "unsupported_conclusion_rate": 0.0
+  },
+  "data_only": {
+   "count": 14,
+   "tool_exact_rate": 1.0,
+   "status_match_rate": 1.0,
+   "avg_tool_calls": 1.07,
+   "avg_duration_ms": 2050.02,
+   "unsupported_conclusion_rate": 0.0
+  },
+  "mixed_analysis": {
+   "count": 8,
+   "tool_exact_rate": 1.0,
+   "status_match_rate": 1.0,
+   "avg_tool_calls": 5.38,
+   "avg_duration_ms": 8434.1,
+   "unsupported_conclusion_rate": 0.0
+  },
+  "no_data_window": {
+   "count": 3,
+   "tool_exact_rate": 1.0,
+   "status_match_rate": 1.0,
+   "avg_tool_calls": 1.67,
+   "avg_duration_ms": 23.21,
+   "unsupported_conclusion_rate": 0.0
+  },
+  "equipment_missing": {
+   "count": 2,
+   "tool_exact_rate": 1.0,
+   "status_match_rate": 1.0,
+   "avg_tool_calls": 1.0,
+   "avg_duration_ms": 15.73,
+   "unsupported_conclusion_rate": 0.0
+  },
+  "invalid_time_range": {
+   "count": 3,
+   "tool_exact_rate": 1.0,
+   "status_match_rate": 1.0,
+   "avg_tool_calls": 0.67,
+   "avg_duration_ms": 4.79,
+   "unsupported_conclusion_rate": 0.0
+  },
+  "data_quality": {
+   "count": 3,
+   "tool_exact_rate": 1.0,
+   "status_match_rate": 1.0,
+   "avg_tool_calls": 1.33,
+   "avg_duration_ms": 5118.72,
+   "unsupported_conclusion_rate": 0.0
+  },
+  "fault_undetermined": {
+   "count": 3,
+   "tool_exact_rate": 1.0,
+   "status_match_rate": 1.0,
+   "avg_tool_calls": 3.33,
+   "avg_duration_ms": 6892.34,
+   "unsupported_conclusion_rate": 0.0
+  },
+  "irrelevant_or_injection": {
+   "count": 5,
+   "tool_exact_rate": 1.0,
+   "status_match_rate": 1.0,
+   "avg_tool_calls": 0.0,
+   "avg_duration_ms": 6.65,
+   "unsupported_conclusion_rate": 0.0
+  }
+ },
+ "failures": [],
+ "fault_scenarios": {
+  "count": 3,
+  "status_ok_rate": 1.0,
+  "fabrication_free_rate": 1.0,
+  "details": [
+   {
+    "id": "T01",
+    "description": "知识库连接串指向不存在的数据库（模拟 RAG 不可用）",
+    "status": "insufficient_evidence",
+    "status_ok": true,
+    "error_categories": [
+     "transient"
+    ],
+    "error_category_ok": true,
+    "fabrication_free": true,
+    "tool_count": 1,
+    "duration_ms": 226.33,
+    "answer_excerpt": "## 结论\n现有知识库没有检索到与该问题相关的文档片段，因此无法确认。请补充设备型号、部件名称或文档线索后重试；本系统不会在无证据时给出结论。\n\n## 不确定性说明\n- 本系统不会在缺少证据时给出结论或猜测数值。\n\n## 执行说明\n\n- 请求未指定 equipment_id，使用默认设备 metropt3-apu-01（数据集中唯一的逻辑设备编号）\n\n> 以上结论基于真实传感器数据与知识库文档片段，属于数据分析与知识参考，不构成故障诊断结论；涉及维修、拆装或参数调整须由具备资质的人员现场确认。"
+   },
+   {
+    "id": "T02",
+    "description": "统计工具超时 1 ms（模拟慢查询超时）",
+    "status": "insufficient_evidence",
+    "status_ok": true,
+    "error_categories": [
+     "timeout"
+    ],
+    "error_category_ok": true,
+    "fabrication_free": true,
+    "tool_count": 1,
+    "duration_ms": 14.61,
+    "answer_excerpt": "## 结论\n本次没有任何成功的工具返回结果，无法给出有证据的回答。请检查设备编号与时间范围，或稍后重试。\n\n## 不确定性说明\n- 本系统不会在缺少证据时给出结论或猜测数值。\n\n## 执行说明\n\n- 请求未指定 equipment_id，使用默认设备 metropt3-apu-01（数据集中唯一的逻辑设备编号）\n\n> 以上结论基于真实传感器数据与知识库文档片段，属于数据分析与知识参考，不构成故障诊断结论；涉及维修、拆装或参数调整须由具备资质的人员现场确认。"
+   },
+   {
+    "id": "T03",
+    "description": "工具调用预算仅 1 次（混合分析问题）",
+    "status": "budget_exhausted",
+    "status_ok": true,
+    "error_categories": [],
+    "error_category_ok": true,
+    "fabrication_free": true,
+    "tool_count": 1,
+    "duration_ms": 23.24,
+    "answer_excerpt": "## 结论\n现有数据与文档证据不足以回答该问题。\n\n## 数据依据（来自真实数据库查询）\n\n- **[D1]** 设备 metropt3-apu-01「MetroPT-3 空气生产单元（APU / 压缩机）」（类型 air_production_unit）；数据集观测范围 2020-02-01T00:00:00 至 2020-09-01T03:59:50。\n  - 来源：工具 get_equipment_info；service=services.equipment_info.get_equipment_info；表/引擎=equipment；只读\n\n## 不确定性说明\n- 该时间窗内没有官方故障事件记录，无法据此确认或排除故障。\n\n## 参考来源\n\n- [D1] 工具 get_equipment_info；service=services.equipment_info.get_equipment_info；表/引擎=equipment；只读\n\n## 执行说明\n\n- 请求未指定 equipment_id，使用默认设备 metropt3-apu-01（数据集中唯一的逻辑设备编号）\n- 知识检索没有返回可引用片段，回答只包含数据部分\n- 计划包含 5 次工具调用，超过上限 1；已裁剪：['get_sensor_statistics', 'get_data_quality', 'get_"
+   }
+  ]
+ },
+ "config": {
+  "planner": "rule",
+  "answer_mode": "auto",
+  "agent_version": "phase3-agent-v1",
+  "question_set": "knowledge/eval/agent_questions.json",
+  "knowledge_database": "iaa_rag_dev",
+  "industrial_database": "industrial_agent_audit",
+  "total_duration_ms": 197891.0
+ },
+ "methodology_limits": [
+  "页码/文档命中是页面级代理指标，不等于“该片段在语义上足以支持结论”；引用逐字校验只证明摘录真实存在于 Chunk 中。",
+  "数值检查采用容差匹配，未覆盖“数值正确但表述口径错误”的情况。",
+  "“无依据结论”由措辞规则 + 数值接地自动识别，不能替代人工语义复核。",
+  "工具执行失败只在 fault_scenarios 中注入（知识库不可达、统计超时、预算不足），未模拟网络抖动、数据库连接池耗尽等环境级故障。"
+ ]
+}

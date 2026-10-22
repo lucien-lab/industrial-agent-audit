@@ -1,0 +1,145 @@
+{
+ "questions": 11,
+ "questions_executed": 11,
+ "questions_rejected_at_entry": 0,
+ "tool_selection": {
+  "exact_match_rate": 0.8182,
+  "precision": 0.9091,
+  "recall": 0.8182,
+  "extra_tool_cases": [],
+  "missing_tool_cases": [
+   {
+    "id": "X08",
+    "missing": [
+     "search_technical_knowledge"
+    ]
+   },
+   {
+    "id": "X11",
+    "missing": [
+     "get_sensor_statistics"
+    ]
+   }
+  ]
+ },
+ "tool_execution": {
+  "total_calls": 14,
+  "success_rate": 1.0,
+  "error_rate": 0.0,
+  "empty_result_rate": 0.0714,
+  "error_categories": {}
+ },
+ "numeric_accuracy": {
+  "numeric_checks": 5,
+  "passed": 5,
+  "rate": 1.0,
+  "text_checks": 1,
+  "text_passed": 1,
+  "text_rate": 1.0
+ },
+ "citation_accuracy": {
+  "knowledge_answer_runs": 2,
+  "evidence_requirement_rate": 0.0,
+  "evidence_requirements": 1,
+  "citation_verbatim_rate": 1.0,
+  "problem_cases": []
+ },
+ "unsupported_conclusions": {
+  "cases": 0,
+  "rate": 0.0,
+  "ids": []
+ },
+ "efficiency": {
+  "avg_tool_calls_per_question": 1.27,
+  "avg_duration_ms": 3015.86,
+  "max_duration_ms": 7665.55
+ },
+ "status_match_rate": 0.8182,
+ "by_category": {
+  "data_only": {
+   "count": 5,
+   "tool_exact_rate": 1.0,
+   "status_match_rate": 1.0,
+   "avg_tool_calls": 1.0,
+   "avg_duration_ms": 2061.98,
+   "unsupported_conclusion_rate": 0.0
+  },
+  "knowledge_only": {
+   "count": 2,
+   "tool_exact_rate": 0.5,
+   "status_match_rate": 0.5,
+   "avg_tool_calls": 0.5,
+   "avg_duration_ms": 3036.09,
+   "unsupported_conclusion_rate": 0.0
+  },
+  "data_quality": {
+   "count": 1,
+   "tool_exact_rate": 1.0,
+   "status_match_rate": 1.0,
+   "avg_tool_calls": 1.0,
+   "avg_duration_ms": 2959.97,
+   "unsupported_conclusion_rate": 0.0
+  },
+  "fault_undetermined": {
+   "count": 2,
+   "tool_exact_rate": 0.5,
+   "status_match_rate": 1.0,
+   "avg_tool_calls": 3.5,
+   "avg_duration_ms": 6912.4,
+   "unsupported_conclusion_rate": 0.0
+  },
+  "irrelevant_or_injection": {
+   "count": 1,
+   "tool_exact_rate": 1.0,
+   "status_match_rate": 0.0,
+   "avg_tool_calls": 0.0,
+   "avg_duration_ms": 7.63,
+   "unsupported_conclusion_rate": 0.0
+  }
+ },
+ "failures": [
+  {
+   "id": "X08",
+   "category": "knowledge_only",
+   "why": [
+    "工具选择不匹配：缺少 ['search_technical_knowledge']，多出 []",
+    "执行状态 insufficient_evidence 与期望不一致"
+   ]
+  },
+  {
+   "id": "X10",
+   "category": "irrelevant_or_injection",
+   "why": [
+    "执行状态 insufficient_evidence 与期望不一致"
+   ]
+  },
+  {
+   "id": "X11",
+   "category": "fault_undetermined",
+   "why": [
+    "工具选择不匹配：缺少 ['get_sensor_statistics']，多出 []"
+   ]
+  }
+ ],
+ "fault_scenarios": {
+  "count": 0,
+  "status_ok_rate": null,
+  "fabrication_free_rate": null,
+  "details": []
+ },
+ "config": {
+  "planner": "rule",
+  "answer_mode": "auto",
+  "agent_version": "phase3-agent-v1",
+  "question_set": "knowledge/eval/agent_holdout.json",
+  "knowledge_database": "iaa_rag_dev",
+  "industrial_database": "industrial_agent_audit",
+  "total_duration_ms": 33187.66
+ },
+ "methodology_limits": [
+  "页码/文档命中是页面级代理指标，不等于“该片段在语义上足以支持结论”；引用逐字校验只证明摘录真实存在于 Chunk 中。",
+  "数值检查采用容差匹配，未覆盖“数值正确但表述口径错误”的情况。",
+  "“无依据结论”由措辞规则 + 数值接地自动识别，不能替代人工语义复核。",
+  "工具执行失败只在 fault_scenarios 中注入（知识库不可达、统计超时、预算不足），未模拟网络抖动、数据库连接池耗尽等环境级故障。"
+ ]
+}

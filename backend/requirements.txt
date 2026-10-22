@@ -25,3 +25,7 @@ httpx==0.28.1          # TestClient / 后续 Agent 调用外部服务
 pymupdf==1.28.0        # PDF 解析（PyMuPDF）
 pgvector==0.4.2        # SQLAlchemy 的 vector 类型（服务端 pgvector 0.8.7）
 # Embedding / LLM 通过本机 Ollama HTTP API 调用，不额外引入 SDK；无需 API Key。
+
+# 阶段 3：LangGraph Agent（单 Agent + 多工具）
+# 优先 conda：conda install -n ms_pointcloud_midterm -c conda-forge langgraph
+langgraph==1.2.2       # StateGraph 工作流（附带 langchain-core 1.6.x / langgraph-checkpoint 4.3.0）
